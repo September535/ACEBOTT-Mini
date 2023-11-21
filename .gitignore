@@ -1,4 +1,5 @@
 # MakeCode
+.vscode
 built
 node_modules
 yotta_modules

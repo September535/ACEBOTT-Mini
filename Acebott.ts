@@ -202,6 +202,17 @@ namespace Acebott{
         pins.i2cWriteBuffer(PCA9685_ADDRESS, buf);
     }
 
+    // LED @start
+    //% blockId=setLedBrightness block="LED at %pin| set brightness %v"
+    //% weight=70
+    //% v.min=0 v.max=100 v.defl=50
+    //% subcategory="Display"
+    //% group="LED"
+    export function setLedBrightness(pin: AnalogWritePin, v: number): void {
+        let port = getAnalogPin(pin)
+        pins.analogWritePin(port, v*10.23)
+    }
+
     //% blockId=setLed block="LED at %pin| set %status"
     //% weight=70
     //% subcategory="Display"
@@ -210,6 +221,7 @@ namespace Acebott{
         let port = getDigitalPin(pin)
         pins.digitalWritePin(port, status)
     }
+    // LED @end
 
     /**
     * Servo Execute
@@ -683,6 +695,11 @@ namespace Acebott{
    }
    // 4-Digital Tube @end
 
+   // LCD1602 @start
+
+
+  // LCD1602 @end
+
    // Laser @start
    //% blockId=setLaser block="Laser at %pin| set %status"
     //% weight=70
@@ -694,7 +711,6 @@ namespace Acebott{
 
    }
    // Laser @end
-
 
     //% blockId=Photoresistance block="Photoresistance at %pin get value"
     //% weight=70

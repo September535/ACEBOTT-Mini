@@ -10,6 +10,7 @@
   "Acebott.dc_motor_run|block": "DC Motor|%index|run speed %speed",
   "Acebott.isButtonPressed|block": "Button at|%pin|is pressed",
   "Acebott.setLaser|block": "Laser at %pin| set %status",
+  "Acebott.setLedBrightness|block": "LED at %pin| set brightness %v",
   "Acebott.setLed|block": "LED at %pin| set %status",
   "Acebott.tm1650_configure|block": "4-Digit Tube |named %name| with CLK %clk|DIO %dio",
   "Acebott.tm1650_displayOff|block": "4-Digit Tube |named %name| turn off",
