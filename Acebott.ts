@@ -6,120 +6,349 @@ enum SwitchStatus{
 }
 
 enum AnalogReadPin{
-  //% block="P0"
-  P0 = 0,
-  //% block="P1"
-  P1 = 1,
-  //% block="P2"
-  P2 = 2,
-  //% block="P3"
-  P3 = 3,
-  //% block="P4"
-  P4 = 4,
-  //% block="P10"
-  P10 = 10
+    //% block="P0"
+    P0 = 0,
+    //% block="P1"
+    P1 = 1,
+    //% block="P2"
+    P2 = 2
 }
 
 enum AnalogWritePin{
-  //% block="P0"
-  P0 = 0,
-  //% block="P1"
-  P1 = 1,
-  //% block="P2"
-  P2 = 2,
-  //% block="P3"
-  P3 = 3,
-  //% block="P4"
-  P4 = 4,
-  //% block="P10"
-  P10 = 10
+    //% block="P0"
+    P0 = 0,
+    //% block="P1"
+    P1 = 1,
+    //% block="P2"
+    P2 = 2
 }
 
 enum DigitalWritePin{
-  //% block="P0"
-  P0 = 0,
-  //% block="P1"
-  P1 = 1,
-  //% block="P2"
-  P2 = 2,
-  //% block="P5"
-  P5 = 5,
-  //% block="P8"
-  P8 = 8,
-  //% block="P9"
-  P9 = 9,
-  //% block="P11"
-  P11 = 11,
-  //% block="P12"
-  P12 = 12,
-  //% block="P13(SCK)"
-  P13 = 13,
-  //% block="P14(MISO)"
-  P14 = 14,
-  //% block="P15(MOSI)"
-  P15 = 15,
-  //% block="P16"
-  P16 = 16
+    //% block="P0"
+    P0 = 0,
+    //% block="P1"
+    P1 = 1,
+    //% block="P2"
+    P2 = 2,
+    //% block="P5"
+    P5 = 5,
+    //% block="P8"
+    P8 = 8,
+    //% block="P9"
+    P9 = 9,
+    //% block="P11"
+    P11 = 11,
+    //% block="P12"
+    P12 = 12,
+    //% block="P13(SCK)"
+    P13 = 13,
+    //% block="P14(MISO)"
+    P14 = 14,
+    //% block="P15(MOSI)"
+    P15 = 15,
+    //% block="P16"
+    P16 = 16
 }
 
 enum DigitalReadPin{
-  //% block="P0"
-  P0 = 0,
-  //% block="P1"
-  P1 = 1,
-  //% block="P2"
-  P2 = 2,
-  //% block="P5"
-  P5 = 5,
-  //% block="P8"
-  P8 = 8,
-  //% block="P9"
-  P9 = 9,
-  //% block="P11"
-  P11 = 11,
-  //% block="P12"
-  P12 = 12,
-  //% block="P13(SCK)"
-  P13 = 13,
-  //% block="P14(MISO)"
-  P14 = 14,
-  //% block="P15(MOSI)"
-  P15 = 15,
-  //% block="P16"
-  P16 = 16
+    //% block="P0"
+    P0 = 0,
+    //% block="P1"
+    P1 = 1,
+    //% block="P2"
+    P2 = 2,
+    //% block="P5"
+    P5 = 5,
+    //% block="P8"
+    P8 = 8,
+    //% block="P9"
+    P9 = 9,
+    //% block="P11"
+    P11 = 11,
+    //% block="P12"
+    P12 = 12,
+    //% block="P13(SCK)"
+    P13 = 13,
+    //% block="P14(MISO)"
+    P14 = 14,
+    //% block="P15(MOSI)"
+    P15 = 15,
+    //% block="P16"
+    P16 = 16
 }
 
 enum DistanceUnit {
-  //% block="cm"
-  CM = 0,
-  //% block="inch"
-  INCH = 1
+    //% block="cm"
+    CM = 0,
+    //% block="inch"
+    INCH = 1
 }
 
 enum Servos {
-  //% block="Servo1"
-  Servo1 = 1,
-  //% block="Servo2"
-  Servo2 = 2
+    //% block="Servo1"
+    Servo1 = 1,
+    //% block="Servo2"
+    Servo2 = 2
 }
 
 enum RGB_Index{
-  //% block="RGB1"
-  RGB1 = 1,
-  //% block="RGB2"
-  RGB2 = 2
+    //% block="RGB1"
+    RGB1 = 1,
+    //% block="RGB2"
+    RGB2 = 2
 }
 
 enum Motors{
-  //% block="M1"
-  M1 = 0,
-  //% block="M2"
-  M2 = 1,
-  //% block="M3"
-  M3 = 2,
-  //% block="M4"
-  M4 = 3
+    //% block="M1"
+    M1 = 0,
+    //% block="M2"
+    M2 = 1,
+    //% block="M3"
+    M3 = 2,
+    //% block="M4"
+    M4 = 3
 }
+
+enum DHT11Type {
+    //% block="temperature(℃)"
+    Temperature_C = 1,
+
+    //% block="temperature(℉)"
+    Temperature_F = 2,
+
+    //% block="humidity(0~100)"
+    Humidity = 3
+}
+
+const enum CharIndex {
+  //% block="1"
+  C1 = 0,
+  //% block="2"
+  C2 = 1,
+  //% block="3"
+  C3 = 2,
+  //% block="4"
+  C4 = 3,
+  //% block="5"
+  C5 = 4,
+  //% block="6"
+  C6 = 5,
+  //% block="7"
+  C7 = 6,
+  //% block="8"
+  C8 = 7
+}
+
+const enum IR_Button {
+  //% block="any"
+  Any = -1,
+  //% block="▲"
+  Up = 0x62,
+  //% block=" "
+  Unused_2 = -2,
+  //% block="◀"
+  Left = 0x22,
+  //% block="OK"
+  Ok = 0x02,
+  //% block="▶"
+  Right = 0xc2,
+  //% block=" "
+  Unused_3 = -3,
+  //% block="▼"
+  Down = 0xa8,
+  //% block=" "
+  Unused_4 = -4,
+  //% block="1"
+  Number_1 = 0x68,
+  //% block="2"
+  Number_2 = 0x98,
+  //% block="3"
+  Number_3 = 0xb0,
+  //% block="4"
+  Number_4 = 0x30,
+  //% block="5"
+  Number_5 = 0x18,
+  //% block="6"
+  Number_6 = 0x7a,
+  //% block="7"
+  Number_7 = 0x10,
+  //% block="8"
+  Number_8 = 0x38,
+  //% block="9"
+  Number_9 = 0x5a,
+  //% block="*"
+  Star = 0x42,
+  //% block="0"
+  Number_0 = 0x4a,
+  //% block="#"
+  Hash = 0x52,
+}
+
+const enum IR_ButtonAction {
+  //% block="Pressed"
+  Pressed = 0,
+  //% block="Released"
+  Released = 1,
+}
+
+const enum IrProtocol {
+  //% block="Keyestudio"
+  Keyestudio = 0,
+  //% block="NEC"
+  NEC = 1,
+}
+
+namespace background {
+
+        export enum Thread {
+            Priority = 0,
+            UserCallback = 1,
+        }
+
+        export enum Mode {
+            Repeat,
+            Once,
+        }
+
+        class Executor {
+            _newJobs: Job[] = undefined;
+            _jobsToRemove: number[] = undefined;
+            _pause: number = 100;
+            _type: Thread;
+
+            constructor(type: Thread) {
+                this._type = type;
+                this._newJobs = [];
+                this._jobsToRemove = [];
+                control.runInParallel(() => this.loop());
+            }
+
+            push(task: () => void, delay: number, mode: Mode): number {
+                if (delay > 0 && delay < this._pause && mode === Mode.Repeat) {
+                    this._pause = Math.floor(delay);
+                }
+                const job = new Job(task, delay, mode);
+                this._newJobs.push(job);
+                return job.id;
+            }
+
+            cancel(jobId: number) {
+                this._jobsToRemove.push(jobId);
+            }
+
+            loop(): void {
+                const _jobs: Job[] = [];
+
+                let previous = control.millis();
+
+                while (true) {
+                    const now = control.millis();
+                    const delta = now - previous;
+                    previous = now;
+
+                    // Add new jobs
+                    this._newJobs.forEach(function (job: Job, index: number) {
+                        _jobs.push(job);
+                    });
+                    this._newJobs = [];
+
+                    // Cancel jobs
+                    this._jobsToRemove.forEach(function (jobId: number, index: number) {
+                        for (let i = _jobs.length - 1; i >= 0; i--) {
+                            const job = _jobs[i];
+                            if (job.id == jobId) {
+                                _jobs.removeAt(i);
+                                break;
+                            }
+                        }
+                    });
+                    this._jobsToRemove = []
+
+
+                    // Execute all jobs
+                    if (this._type === Thread.Priority) {
+                        // newest first
+                        for (let i = _jobs.length - 1; i >= 0; i--) {
+                            if (_jobs[i].run(delta)) {
+                                this._jobsToRemove.push(_jobs[i].id)
+                            }
+                        }
+                    } else {
+                        // Execute in order of schedule
+                        for (let i = 0; i < _jobs.length; i++) {
+                            if (_jobs[i].run(delta)) {
+                                this._jobsToRemove.push(_jobs[i].id)
+                            }
+                        }
+                    }
+
+                    basic.pause(this._pause);
+                }
+            }
+        }
+
+        class Job {
+            id: number;
+            func: () => void;
+            delay: number;
+            remaining: number;
+            mode: Mode;
+
+            constructor(func: () => void, delay: number, mode: Mode) {
+                this.id = randint(0, 2147483647)
+                this.func = func;
+                this.delay = delay;
+                this.remaining = delay;
+                this.mode = mode;
+            }
+
+            run(delta: number): boolean {
+                if (delta <= 0) {
+                    return false;
+                }
+
+                this.remaining -= delta;
+                if (this.remaining > 0) {
+                    return false;
+                }
+
+                switch (this.mode) {
+                    case Mode.Once:
+                        this.func();
+                        basic.pause(0);
+                        return true;
+                    case Mode.Repeat:
+                        this.func();
+                        this.remaining = this.delay;
+                        basic.pause(0);
+                        return false;
+                }
+            }
+        }
+
+        const queues: Executor[] = [];
+
+        export function schedule(
+            func: () => void,
+            type: Thread,
+            mode: Mode,
+            delay: number,
+        ): number {
+            if (!func || delay < 0) return 0;
+
+            if (!queues[type]) {
+                queues[type] = new Executor(type);
+            }
+
+            return queues[type].push(func, delay, mode);
+        }
+
+        export function remove(type: Thread, jobId: number): void {
+            if (queues[type]) {
+                queues[type].cancel(jobId);
+            }
+        }
+    }
 
 //% icon="icon_1.png"
 namespace Acebott{
@@ -696,8 +925,162 @@ namespace Acebott{
    // 4-Digital Tube @end
 
    // LCD1602 @start
+  let i2cAddr: number // 0x27: PCF8574
+  let BK: number      // backlight control
+  let RS: number      // command/data
+  let Custom_Char: number[][] = []
+
+  // set LCD reg
+  function setreg(d: number) {
+    pins.i2cWriteNumber(i2cAddr, d, NumberFormat.Int8LE)
+    basic.pause(1)
+    }
+
+    // send data to I2C bus
+    function set(d: number) {
+        d = d & 0xF0
+        d = d + BK + RS
+        setreg(d)
+        setreg(d + 4)
+        setreg(d)
+    }
+
+    // send command
+    function cmd(d: number) {
+        RS = 0
+        set(d)
+        set(d << 4)
+    }
+
+    // send data
+    function dat(d: number) {
+        RS = 1
+        set(d)
+        set(d << 4)
+    }
+
+    //% blockId="LCD1602_Clear" block="LCD1602 clear screen"
+    //% subcategory="Display"
+    //% group="LCD1602"
+    export function LCD1602_Clear(): void {
+        cmd(0x01)
+    }
+
+    //% blockId="LCD1602_shl" block="LCD1602 shift left"
+    //% subcategory="Display"
+    //% group="LCD1602"
+    export function LCD1602_shl(): void {
+        cmd(0x18)
+    }
+
+    //% blockId="LCD1602_shr" block="LCD1602 shift right"
+    //% subcategory="Display"
+    //% group="LCD1602"
+    export function LCD1602_shr(): void {
+        cmd(0x1C)
+    }
+
+    //% blockId="LCD1602_Makecharacter"
+    //% block="LCD1602 create custom character %char_index|%im"
+    //% subcategory="Display"
+    //% group="LCD1602"
+    export function LCD1602_CreateCharacter(char_index: CharIndex, im: Image): void {
+      const customChar = [0, 0, 0, 0, 0, 0, 0, 0];
+      for(let y = 0; y < 8; y++) {
+        for(let x = 0; x < 5; x++) {
+          if (im.pixel(x, y)) {
+            customChar[y] |= 1 << (4 - x)
+          }
+        }
+      }
+      Custom_Char[char_index] = customChar;
+    }
+
+    //% blockId="LCD1602_Characterpixels"
+    //% block="Custom character"
+    //% imageLiteral=1
+    //% imageLiteralColumns=5
+    //% imageLiteralRows=8
+    //% imageLiteralScale=0.6
+    //% shim=images::createImage
+    //% subcategory="Display"
+    //% group="LCD1602"
+    export function LCD1602_CharacterPixels(i: string): Image {
+        return <Image><any>i;
+    }
 
 
+    //% blockId="LCD1602_Showchararacter"
+    //% block="LCD1602 at (x:|%x|,y:|%y) show custom character|%char_index"
+    //% x.min=0 x.max=15
+    //% y.min=0 y.max=1
+    //% subcategory="Display"
+    //% group="LCD1602"
+    export function LCD1602_Showchararacter(x: number, y: number, char_index: CharIndex): void {
+      let a: number
+      if (y > 0)
+          a = 0xC0
+      else
+          a = 0x80
+      a += x
+      cmd(0x40 | (char_index << 3));
+      for (let y = 0; y < 8; y++) {
+          dat(Custom_Char[char_index][y]);
+      }
+      cmd(a)
+      dat(char_index)
+
+    }
+
+    //% blockId="LCD1602_ShowString" block="LCD1602 at (x:|%x|,y:|%y) show string|%s|"
+    //% x.min=0 x.max=15
+    //% y.min=0 y.max=1
+    //% s.defl="Hello,Acebott!"
+    //% subcategory="Display"
+    //% group="LCD1602"
+    export function LCD1602_ShowString(x: number, y: number, s: string): void {
+        let a: number
+
+        if (y > 0)
+            a = 0xC0
+        else
+            a = 0x80
+        a += x
+        cmd(a)
+
+        for (let i = 0; i < s.length; i++) {
+            dat(s.charCodeAt(i))
+        }
+    }
+
+    //% blockId="LCD16202_ShowNumber" block="LCD1602 at (x:|%x|,y:|%y) show number|%n|"
+    //% x.min=0 x.max=15
+    //% y.min=0 y.max=1
+    //% subcategory="Display"
+    //% group="LCD1602"
+    export function LCD1602_ShowNumber(x: number, y: number, n: number): void {
+        let s = n.toString()
+        LCD1602_ShowString(x, y, s)
+    }
+
+    //% blockId="LCD1602_Init" block="LCD1602 initialization"
+    //% subcategory="Display"
+    //% group="LCD1602"
+    export function LCD1602_Init(): void {
+        i2cAddr = 39
+        BK = 8
+        RS = 0
+        cmd(0x33)       // set 4bit mode
+        basic.pause(5)
+        set(0x30)
+        basic.pause(5)
+        set(0x20)
+        basic.pause(5)
+        cmd(0x28)       // set mode
+        cmd(0x0C)
+        cmd(0x06)
+        cmd(0x01)       // clear
+    }
   // LCD1602 @end
 
    // Laser @start
@@ -827,5 +1210,407 @@ namespace Acebott{
     return pins.digitalReadPin(port) == 0;
   }
   // Button Module @end
+
+  // DHT11 @Start
+  let dht11Humidity = 0
+  let dht11Temperature = 0
+  let startTime = 0
+
+  //% blockId="DHT11_getvalue" block="Temperature and Humidity Sensor at|%pin| get value|%data_type"
+  //% group="Temperature and Humidity"
+  //% subcategory="Sensor"
+  export function DHT11_getvalue(pin: DigitalWritePin, data_type: DHT11Type): number {
+    const DHT11_TIMEOUT = 100
+    const buffer = pins.createBuffer(40)
+    const data = [0, 0, 0, 0, 0]
+    let dht11pin = getDigitalPin(pin)
+
+    if(control.micros() - startTime > 2000){
+      // 1.start signal
+      pins.digitalWritePin(dht11pin, 0)
+      basic.pause(18)
+
+      // 2.pull up and wait 40us
+      pins.setPull(dht11pin, PinPullMode.PullUp)
+      pins.digitalReadPin(dht11pin)
+      control.waitMicros(40)
+
+      // 3.read data
+      startTime = control.micros()
+      while (pins.digitalReadPin(dht11pin) === 0) {
+          if (control.micros() - startTime > DHT11_TIMEOUT) break
+      }
+      startTime = control.micros()
+      while (pins.digitalReadPin(dht11pin) === 1) {
+          if (control.micros() - startTime > DHT11_TIMEOUT) break
+      }
+
+      for (let dataBits = 0; dataBits < 40; dataBits++) {
+          startTime = control.micros()
+          while (pins.digitalReadPin(dht11pin) === 1) {
+              if (control.micros() - startTime > DHT11_TIMEOUT) break
+          }
+          startTime = control.micros()
+          while (pins.digitalReadPin(dht11pin) === 0) {
+              if (control.micros() - startTime > DHT11_TIMEOUT) break
+          }
+          control.waitMicros(28)
+          if (pins.digitalReadPin(dht11pin) === 1) {
+              buffer[dataBits] = 1
+          }
+      }
+
+      for (let i = 0; i < 5; i++) {
+        for (let j = 0; j < 8; j++) {
+          if (buffer[8 * i + j] === 1) {
+            data[i] += 2 ** (7 - j)
+          }
+        }
+      }
+
+      if (((data[0] + data[1] + data[2] + data[3]) & 0xff) === data[4]) {
+        dht11Humidity = data[0] + data[1] * 0.1
+        dht11Temperature = data[2] + data[3] * 0.1
+      }
+      startTime = control.micros()
+    }
+
+    switch (data_type) {
+      case DHT11Type.Temperature_C:
+        return dht11Temperature
+      case DHT11Type.Temperature_F:
+        return (dht11Temperature * 1.8) + 32
+      case DHT11Type.Humidity:
+        return dht11Humidity
+    }
+  }
+  // DHT11 @end
+
+  // Raindrop Sensor @start
+  //% blockId=RaindropSensor block="Raindrop Sensor at %pin get value"
+  //% group="Raindrop Sensor"
+  //% subcategory="Sensor"
+  export function RaindropSensor(pin: AnalogReadPin): number {
+    let port = getAnalogPin(pin)
+    return pins.analogReadPin(port)
+  }
+  // Raindrop Sensor @end
+
+  // MQ-4 Sensor @start
+  //% blockId=MQ4_Sensor block="MQ-4 Sensor at %pin get value"
+  //% group="MQ-4 Sensor"
+  //% subcategory="Sensor"
+  export function MQ4_Sensor(pin: AnalogReadPin): number {
+    let port = getAnalogPin(pin)
+    return pins.analogReadPin(port)
+  }
+  // MQ-4 Sensor @end
+
+  // // Trace Sensor @start
+  // //% blockId=Trace Sensor block="Trace Sensor at %pin get value"
+  // //% group="Trace Sensor"
+  // //% subcategory="Sensor"
+  // export function Trace_Sensor(pin: AnalogReadPin): number {
+  //   let port = getAnalogPin(pin)
+  //   return pins.analogReadPin(port)
+  // }
+  // // Trace Sensor @end
+
+  // IR Receiver @startTime
+    let irState: IrState;
+
+    const IR_REPEAT = 256;
+    const IR_INCOMPLETE = 257;
+    const IR_DATAGRAM = 258;
+
+    const REPEAT_TIMEOUT_MS = 120;
+
+    interface IrState {
+      protocol: IrProtocol;
+      hasNewDatagram: boolean;
+      bitsReceived: uint8;
+      addressSectionBits: uint16;
+      commandSectionBits: uint16;
+      hiword: uint16;
+      loword: uint16;
+      activeCommand: number;
+      repeatTimeout: number;
+      onIrButtonPressed: IrButtonHandler[];
+      onIrButtonReleased: IrButtonHandler[];
+      onIrDatagram: () => void;
+    }
+    class IrButtonHandler {
+      irButton: IR_Button;
+      onEvent: () => void;
+
+      constructor(
+        irButton: IR_Button,
+        onEvent: () => void
+      ) {
+        this.irButton = irButton;
+        this.onEvent = onEvent;
+      }
+    }
+
+
+    function appendBitToDatagram(bit: number): number {
+      irState.bitsReceived += 1;
+
+      if (irState.bitsReceived <= 8) {
+        irState.hiword = (irState.hiword << 1) + bit;
+        if (irState.protocol === IrProtocol.Keyestudio && bit === 1) {
+          // recover from missing message bits at the beginning
+          // Keyestudio address is 0 and thus missing bits can be detected
+          // by checking for the first inverse address bit (which is a 1)
+          irState.bitsReceived = 9;
+          irState.hiword = 1;
+        }
+      } else if (irState.bitsReceived <= 16) {
+        irState.hiword = (irState.hiword << 1) + bit;
+      } else if (irState.bitsReceived <= 32) {
+        irState.loword = (irState.loword << 1) + bit;
+      }
+
+      if (irState.bitsReceived === 32) {
+        irState.addressSectionBits = irState.hiword & 0xffff;
+        irState.commandSectionBits = irState.loword & 0xffff;
+        return IR_DATAGRAM;
+      } else {
+        return IR_INCOMPLETE;
+      }
+    }
+
+    function decode(markAndSpace: number): number {
+      if (markAndSpace < 1600) {
+        // low bit
+        return appendBitToDatagram(0);
+      } else if (markAndSpace < 2700) {
+        // high bit
+        return appendBitToDatagram(1);
+      }
+
+      irState.bitsReceived = 0;
+
+      if (markAndSpace < 12500) {
+        // Repeat detected
+        return IR_REPEAT;
+      } else if (markAndSpace < 14500) {
+        // Start detected
+        return IR_INCOMPLETE;
+      } else {
+        return IR_INCOMPLETE;
+      }
+    }
+
+    function enableIrMarkSpaceDetection(pin: DigitalPin) {
+      pins.setPull(pin, PinPullMode.PullNone);
+
+      let mark = 0;
+      let space = 0;
+
+      pins.onPulsed(pin, PulseValue.Low, () => {
+        // HIGH, see https://github.com/microsoft/pxt-microbit/issues/1416
+        mark = pins.pulseDuration();
+      });
+
+      pins.onPulsed(pin, PulseValue.High, () => {
+        // LOW
+        space = pins.pulseDuration();
+        const status = decode(mark + space);
+
+        if (status !== IR_INCOMPLETE) {
+          handleIrEvent(status);
+        }
+      });
+    }
+
+    function handleIrEvent(irEvent: number) {
+
+      // Refresh repeat timer
+      if (irEvent === IR_DATAGRAM || irEvent === IR_REPEAT) {
+        irState.repeatTimeout = input.runningTime() + REPEAT_TIMEOUT_MS;
+      }
+
+      if (irEvent === IR_DATAGRAM) {
+        irState.hasNewDatagram = true;
+
+        if (irState.onIrDatagram) {
+          background.schedule(irState.onIrDatagram, background.Thread.UserCallback, background.Mode.Once, 0);
+        }
+
+        const newCommand = irState.commandSectionBits >> 8;
+
+        // Process a new command
+        if (newCommand !== irState.activeCommand) {
+
+          if (irState.activeCommand >= 0) {
+            const releasedHandler = irState.onIrButtonReleased.find(h => h.irButton === irState.activeCommand || IR_Button.Any === h.irButton);
+            if (releasedHandler) {
+              background.schedule(releasedHandler.onEvent, background.Thread.UserCallback, background.Mode.Once, 0);
+            }
+          }
+
+          const pressedHandler = irState.onIrButtonPressed.find(h => h.irButton === newCommand || IR_Button.Any === h.irButton);
+          if (pressedHandler) {
+            background.schedule(pressedHandler.onEvent, background.Thread.UserCallback, background.Mode.Once, 0);
+          }
+
+          irState.activeCommand = newCommand;
+        }
+      }
+    }
+
+    function initIrState() {
+      if (irState) {
+        return;
+      }
+
+      irState = {
+        protocol: undefined,
+        bitsReceived: 0,
+        hasNewDatagram: false,
+        addressSectionBits: 0,
+        commandSectionBits: 0,
+        hiword: 0, // TODO replace with uint32
+        loword: 0,
+        activeCommand: -1,
+        repeatTimeout: 0,
+        onIrButtonPressed: [],
+        onIrButtonReleased: [],
+        onIrDatagram: undefined,
+      };
+    }
+
+    /**
+     * Connects to the IR receiver module at the specified pin and configures the IR protocol.
+     * @param pin IR receiver pin, eg: DigitalPin.P0
+     * @param protocol IR protocol, eg: IrProtocol.Keyestudio
+     */
+    //% blockId="IRReceiver_init"
+    //% block="IR receiver at %pin"
+    //% pin.fieldEditor="gridpicker"
+    //% pin.fieldOptions.columns=4
+    //% pin.fieldOptions.tooltips="false"
+    //% group="IR Receiver"
+    //% subcategory="Sensor"
+    export function IRReceiver_init(pin: DigitalPin): void {
+      initIrState();
+
+      if (irState.protocol) {
+        return;
+      }
+
+      irState.protocol = 1;
+
+      enableIrMarkSpaceDetection(pin);
+
+      background.schedule(notifyIrEvents, background.Thread.Priority, background.Mode.Repeat, REPEAT_TIMEOUT_MS);
+    }
+
+    function notifyIrEvents() {
+      if (irState.activeCommand === -1) {
+        // skip to save CPU cylces
+      } else {
+        const now = input.runningTime();
+        if (now > irState.repeatTimeout) {
+          // repeat timed out
+
+          const handler = irState.onIrButtonReleased.find(h => h.irButton === irState.activeCommand || IR_Button.Any === h.irButton);
+          if (handler) {
+            background.schedule(handler.onEvent, background.Thread.UserCallback, background.Mode.Once, 0);
+          }
+
+          irState.bitsReceived = 0;
+          irState.activeCommand = -1;
+        }
+      }
+    }
+
+    //% blockId=IR_onButton
+    //% block="IR on button | %button | %action"
+    //% button.fieldEditor="gridpicker"
+    //% button.fieldOptions.columns=3
+    //% button.fieldOptions.tooltips="false"
+    //% group="IR Receiver"
+    //% subcategory="Sensor"
+    export function IR_onButton(
+      button: IR_Button,
+      action: IR_ButtonAction,
+      handler: () => void
+    ) {
+      initIrState();
+      if (action === IR_ButtonAction.Pressed) {
+        irState.onIrButtonPressed.push(new IrButtonHandler(button, handler));
+      }
+      else {
+        irState.onIrButtonReleased.push(new IrButtonHandler(button, handler));
+      }
+    }
+
+
+    //% blockId=IR_DecodeResult
+    //% block="IR button decode result is %button"
+    //% button.fieldEditor="gridpicker"
+    //% button.fieldOptions.columns=3
+    //% button.fieldOptions.tooltips="false"
+    //% group="IR Receiver"
+    //% subcategory="Sensor"
+    export function IR_isDecodeResult(button: IR_Button): boolean {
+      let d=-1
+      basic.pause(0); // Yield to support background processing when called in tight loops
+      if (!irState) {
+        d = IR_Button.Any
+      }else{
+        d = irState.commandSectionBits >> 8
+      }
+      return (d ==button)
+    }
+
+    //% blockId=IR_isReceived
+    //% block="IR data is received"
+    //% group="IR Receiver"
+    //% subcategory="Sensor"
+    export function IR_isReceived(): boolean {
+      basic.pause(0); // Yield to support background processing when called in tight loops
+      initIrState();
+      if (irState.hasNewDatagram) {
+        irState.hasNewDatagram = false;
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    // /**
+    //  * Returns the command code of a specific IR button.
+    //  * @param button the button
+    //  */
+    // //% blockId=IR_ButtonCode
+    // //% button.fieldEditor="gridpicker"
+    // //% button.fieldOptions.columns=3
+    // //% button.fieldOptions.tooltips="false"
+    // //% block="IR button code %button"
+    // //% group="IR Receiver"
+    // //% subcategory="Sensor"
+    // export function IR_ButtonCode(button: IR_Button): number {
+    //   basic.pause(0); // Yield to support background processing when called in tight loops
+    //   return button as number;
+    // }
+
+    function ir_rec_to16BitHex(value: number): string {
+      let hex = "";
+      for (let pos = 0; pos < 4; pos++) {
+        let remainder = value % 16;
+        if (remainder < 10) {
+          hex = remainder.toString() + hex;
+        } else {
+          hex = String.fromCharCode(55 + remainder) + hex;
+        }
+        value = Math.idiv(value, 16);
+      }
+      return hex;
+    }
+    // IR Receiver @end
+
 
 }
