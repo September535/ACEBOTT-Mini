@@ -1481,32 +1481,6 @@ namespace Acebott{
       };
     }
 
-    /**
-     * Connects to the IR receiver module at the specified pin and configures the IR protocol.
-     * @param pin IR receiver pin, eg: DigitalPin.P0
-     * @param protocol IR protocol, eg: IrProtocol.Keyestudio
-     */
-    //% blockId="IRReceiver_init"
-    //% block="IR receiver at %pin"
-    //% pin.fieldEditor="gridpicker"
-    //% pin.fieldOptions.columns=4
-    //% pin.fieldOptions.tooltips="false"
-    //% group="IR Receiver"
-    //% subcategory="Sensor"
-    export function IRReceiver_init(pin: DigitalPin): void {
-      initIrState();
-
-      if (irState.protocol) {
-        return;
-      }
-
-      irState.protocol = 1;
-
-      enableIrMarkSpaceDetection(pin);
-
-      background.schedule(notifyIrEvents, background.Thread.Priority, background.Mode.Repeat, REPEAT_TIMEOUT_MS);
-    }
-
     function notifyIrEvents() {
       if (irState.activeCommand === -1) {
         // skip to save CPU cylces
@@ -1609,6 +1583,27 @@ namespace Acebott{
         value = Math.idiv(value, 16);
       }
       return hex;
+    }
+
+    //% blockId="IRReceiver_init"
+    //% block="IR receiver at %pin"
+    //% pin.fieldEditor="gridpicker"
+    //% pin.fieldOptions.columns=4
+    //% pin.fieldOptions.tooltips="false"
+    //% group="IR Receiver"
+    //% subcategory="Sensor"
+    export function IRReceiver_init(pin: DigitalPin): void {
+      initIrState();
+
+      if (irState.protocol) {
+        return;
+      }
+
+      irState.protocol = 1;
+
+      enableIrMarkSpaceDetection(pin);
+
+      background.schedule(notifyIrEvents, background.Thread.Priority, background.Mode.Repeat, REPEAT_TIMEOUT_MS);
     }
     // IR Receiver @end
 
