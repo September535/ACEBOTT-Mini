@@ -198,6 +198,16 @@ const enum IrProtocol {
   NEC = 1,
 }
 
+const enum Trace_Sensor_Index{
+  //% block="R"
+  R = 0,
+  //% block="M"
+  M = 1,
+  //% block="L"
+  L = 2
+
+}
+
 namespace background {
 
         export enum Thread {
@@ -1306,16 +1316,6 @@ namespace Acebott{
   }
   // MQ-4 Sensor @end
 
-  // // Trace Sensor @start
-  // //% blockId=Trace Sensor block="Trace Sensor at %pin get value"
-  // //% group="Trace Sensor"
-  // //% subcategory="Sensor"
-  // export function Trace_Sensor(pin: AnalogReadPin): number {
-  //   let port = getAnalogPin(pin)
-  //   return pins.analogReadPin(port)
-  // }
-  // // Trace Sensor @end
-
   // IR Receiver @startTime
     let irState: IrState;
 
@@ -1607,5 +1607,497 @@ namespace Acebott{
     }
     // IR Receiver @end
 
+    // RC522 RFID @start
+    let MFRC522_ADDRESS = 0x28
+    let Type2 = 0
+    const BlockAdr: number[] = [8, 9, 10]
+    let TPrescalerReg = 0x2B
+    let TxControlReg = 0x14
+    let PICC_READ = 0x30
+    let PICC_ANTICOLL = 0x93
+    let PCD_RESETPHASE = 0x0F
+    let temp = 0
+    let val = 0
+    let uid: number[] = []
 
+    let returnLen = 0
+    let returnData: number[] = []
+    let status = 0
+    let u = 0
+    let ChkSerNum = 0
+    let returnBits: any = null
+    let recvData: number[] = []
+    let PCD_IDLE = 0
+    let d = 0
+
+    let Status2Reg = 0x08
+    let CommandReg = 0x01
+    let BitFramingReg = 0x0D
+    let MAX_LEN = 16
+    let PCD_AUTHENT = 0x0E
+    let PCD_TRANSCEIVE = 0x0C
+    let PICC_REQIDL = 0x26
+    let PICC_AUTHENT1A = 0x60
+
+    let ComIrqReg = 0x04
+    let DivIrqReg = 0x05
+    let FIFODataReg = 0x09
+    let FIFOLevelReg = 0x0A
+    let ControlReg = 0x0C
+    let Key = [255, 255, 255, 255, 255, 255]
+
+    function SetBits(reg: number, mask: number) {
+        let tmp = i2cread(MFRC522_ADDRESS,reg)
+        i2cwrite(MFRC522_ADDRESS, reg, (tmp | mask))
+    }
+
+    function readFromCard(): string {
+        let [status, Type2] = Request(PICC_REQIDL)
+        if (status != 0) {
+            return null, null
+        }
+
+        [status, uid] = AvoidColl()
+
+        if (status != 0) {
+            return null, null
+        }
+
+        let id = getIDNum(uid)
+        TagSelect(uid)
+        status = Authent(PICC_AUTHENT1A, 11, Key, uid)
+        let data: NumberFormat.UInt8LE[] = []
+        let text_read = ''
+        let block: number[] = []
+        if (status == 0) {
+            for (let BlockNum of BlockAdr) {
+                block = ReadRFID(BlockNum)
+                if (block) {
+                    data = data.concat(block)
+                }
+            }
+            if (data) {
+                for (let c of data) {
+                    text_read = text_read.concat(String.fromCharCode(c))
+                }
+            }
+        }
+        Crypto1Stop()
+        return text_read
+    }
+
+    function writeToCard(txt: string): number {
+        [status, Type2] = Request(PICC_REQIDL)
+
+        if (status != 0) {
+            return null, null
+        }
+        [status, uid] = AvoidColl()
+
+        if (status != 0) {
+            return null, null
+        }
+
+        let id = getIDNum(uid)
+        TagSelect(uid)
+        status = Authent(PICC_AUTHENT1A, 11, Key, uid)
+        ReadRFID(11)
+
+        if (status == 0) {
+            let data: NumberFormat.UInt8LE[] = []
+            for (let i = 0; i < txt.length; i++) {
+                data.push(txt.charCodeAt(i))
+            }
+
+            for (let j = txt.length; j < 48; j++) {
+                data.push(32)
+            }
+
+            let b = 0
+            for (let BlockNum2 of BlockAdr) {
+                WriteRFID(BlockNum2, data.slice((b * 16), ((b + 1) * 16)))
+                b++
+            }
+        }
+
+        Crypto1Stop()
+        serial.writeLine("Written to Card")
+        return id
+    }
+
+
+    function ReadRFID(blockAdr: number) {
+        recvData = []
+        recvData.push(PICC_READ)
+        recvData.push(blockAdr)
+        let pOut2 = []
+        pOut2 = CRC_Calculation(recvData)
+        recvData.push(pOut2[0])
+        recvData.push(pOut2[1])
+        let [status, returnData, returnLen] = MFRC522_ToCard(PCD_TRANSCEIVE, recvData)
+
+        if (status != 0) {
+            serial.writeLine("Error while reading!")
+        }
+
+        if (returnData.length != 16) {
+            return null
+        }
+        else {
+            return returnData
+        }
+    }
+
+    function ClearBits(reg: number, mask: number) {
+        let tmp = i2cread(MFRC522_ADDRESS,reg)
+        i2cwrite(MFRC522_ADDRESS, reg, tmp & (~mask))
+    }
+
+
+
+    function Request(reqMode: number): [number, any] {
+        let Type: number[] = []
+        i2cwrite(MFRC522_ADDRESS, BitFramingReg, 0x07)
+        Type.push(reqMode)
+        let [status, returnData, returnBits] = MFRC522_ToCard(PCD_TRANSCEIVE, Type)
+
+        if ((status != 0) || (returnBits != 16)) {
+            status = 2
+        }
+
+        return [status, returnBits]
+    }
+
+    function AntennaON() {
+        temp = i2cread(MFRC522_ADDRESS,TxControlReg)
+        if (~(temp & 0x03)) {
+            SetBits(TxControlReg, 0x03)
+        }
+    }
+
+    function AvoidColl(): [number, number[]] {
+        let SerNum = []
+        ChkSerNum = 0
+        i2cwrite(MFRC522_ADDRESS, BitFramingReg, 0)
+        SerNum.push(PICC_ANTICOLL)
+        SerNum.push(0x20)
+        let [status, returnData, returnBits] = MFRC522_ToCard(PCD_TRANSCEIVE, SerNum)
+
+        if (status == 0) {
+            if (returnData.length == 5) {
+                for (let k = 0; k <= 3; k++) {
+                    ChkSerNum = ChkSerNum ^ returnData[k]
+                }
+                if (ChkSerNum != returnData[4]) {
+                    status = 2
+                }
+            }
+            else {
+                status = 2
+            }
+        }
+        return [status, returnData]
+    }
+
+    function Crypto1Stop() {
+        ClearBits(Status2Reg, 0x08)
+    }
+
+
+    function Authent(authMode: number, BlockAdr: number, Sectorkey: number[], SerNum: number[]) {
+        let buff: number[] = []
+        buff.push(authMode)
+        buff.push(BlockAdr)
+        for (let l = 0; l < (Sectorkey.length); l++) {
+            buff.push(Sectorkey[l])
+        }
+        for (let m = 0; m < 4; m++) {
+            buff.push(SerNum[m])
+        }
+        [status, returnData, returnLen] = MFRC522_ToCard(PCD_AUTHENT, buff)
+        if (status != 0) {
+            serial.writeLine("AUTH ERROR!")
+        }
+        if ((i2cread(MFRC522_ADDRESS,Status2Reg) & 0x08) == 0) {
+            serial.writeLine("AUTH ERROR2!")
+        }
+        return status
+    }
+
+    function MFRC522_ToCard(command: number, sendData: number[]): [number, number[], number] {
+        returnData = []
+        returnLen = 0
+        status = 2
+        let irqEN = 0x00
+        let waitIRQ = 0x00
+        let lastBits = null
+        let n = 0
+
+        if (command == PCD_AUTHENT) {
+            irqEN = 0x12
+            waitIRQ = 0x10
+        }
+
+        if (command == PCD_TRANSCEIVE) {
+            irqEN = 0x77
+            waitIRQ = 0x30
+        }
+
+        i2cwrite(MFRC522_ADDRESS, 0x02, irqEN | 0x80)
+        ClearBits(ComIrqReg, 0x80)
+        SetBits(FIFOLevelReg, 0x80)
+        i2cwrite(MFRC522_ADDRESS, CommandReg, PCD_IDLE)
+
+        for (let o = 0; o < (sendData.length); o++) {
+            i2cwrite(MFRC522_ADDRESS, FIFODataReg, sendData[o])
+        }
+        i2cwrite(MFRC522_ADDRESS, CommandReg, command)
+
+        if (command == PCD_TRANSCEIVE) {
+            SetBits(BitFramingReg, 0x80)
+        }
+
+        let p = 2000
+        while (true) {
+            n = i2cread(MFRC522_ADDRESS,ComIrqReg)
+            p--
+            if (~(p != 0 && ~(n & 0x01) && ~(n & waitIRQ))) {
+                break
+            }
+        }
+        ClearBits(BitFramingReg, 0x80)
+
+        if (p != 0) {
+            if ((i2cread(MFRC522_ADDRESS,0x06) & 0x1B) == 0x00) {
+                status = 0
+                if (n & irqEN & 0x01) {
+                    status = 1
+                }
+                if (command == PCD_TRANSCEIVE) {
+                    n = i2cread(MFRC522_ADDRESS,FIFOLevelReg)
+                    lastBits = i2cread(MFRC522_ADDRESS,ControlReg) & 0x07
+                    if (lastBits != 0) {
+                        returnLen = (n - 1) * 8 + lastBits
+                    }
+                    else {
+                        returnLen = n * 8
+                    }
+                    if (n == 0) {
+                        n = 1
+                    }
+                    if (n > MAX_LEN) {
+                        n = MAX_LEN
+                    }
+                    for (let q = 0; q < n; q++) {
+                        returnData.push(i2cread(MFRC522_ADDRESS,FIFODataReg))
+                    }
+                }
+            }
+            else {
+                status = 2
+            }
+        }
+
+        return [status, returnData, returnLen]
+    }
+
+    function TagSelect(SerNum: number[]) {
+        let buff: number[] = []
+        buff.push(0x93)
+        buff.push(0x70)
+        for (let r = 0; r < 5; r++) {
+            buff.push(SerNum[r])
+        }
+
+        let pOut = CRC_Calculation(buff)
+        buff.push(pOut[0])
+        buff.push(pOut[1])
+        let [status, returnData, returnLen] = MFRC522_ToCard(PCD_TRANSCEIVE, buff)
+        if ((status == 0) && (returnLen == 0x18)) {
+            return returnData[0]
+        }
+        else {
+            return 0
+        }
+    }
+
+    function CRC_Calculation(DataIn: number[]) {
+        ClearBits(DivIrqReg, 0x04)
+        SetBits(FIFOLevelReg, 0x80)
+        for (let s = 0; s < (DataIn.length); s++) {
+            i2cwrite(MFRC522_ADDRESS, FIFODataReg, DataIn[s])
+        }
+        i2cwrite(MFRC522_ADDRESS, CommandReg, 0x03)
+        let t = 0xFF
+
+        while (true) {
+            let v = i2cread(MFRC522_ADDRESS,DivIrqReg)
+            t--
+            if (!(t != 0 && !(v & 0x04))) {
+                break
+            }
+        }
+
+        let DataOut: number[] = []
+        DataOut.push(i2cread(MFRC522_ADDRESS,0x22))
+        DataOut.push(i2cread(MFRC522_ADDRESS,0x21))
+        return DataOut
+    }
+
+    function WriteRFID(blockAdr: number, writeData: number[]) {
+        let buff: number[] = []
+        let crc: number[] = []
+
+        buff.push(0xA0)
+        buff.push(blockAdr)
+        crc = CRC_Calculation(buff)
+        buff.push(crc[0])
+        buff.push(crc[1])
+        let [status, returnData, returnLen] = MFRC522_ToCard(PCD_TRANSCEIVE, buff)
+        if ((status != 0) || (returnLen != 4) || ((returnData[0] & 0x0F) != 0x0A)) {
+            status = 2
+            serial.writeLine("ERROR")
+        }
+
+        if (status == 0) {
+            let buff2: number[] = []
+            for (let w = 0; w < 16; w++) {
+                buff2.push(writeData[w])
+            }
+            crc = CRC_Calculation(buff2)
+            buff2.push(crc[0])
+            buff2.push(crc[1])
+            let [status, returnData, returnLen] = MFRC522_ToCard(PCD_TRANSCEIVE, buff2)
+            if ((status != 0) || (returnLen != 4) || ((returnData[0] & 0x0F) != 0x0A)) {
+                serial.writeLine("Error while writing")
+            }
+            else {
+                serial.writeLine("Data written")
+            }
+        }
+    }
+
+    function getIDNum(uid: number[]) {
+        let a = 0
+
+        for (let e = 0; e < 5; e++) {
+            a = a * 256 + uid[e]
+        }
+        return a
+    }
+
+    function readID() {
+        [status, Type2] = Request(PICC_REQIDL)
+
+        if (status != 0) {
+            return null
+        }
+        [status, uid] = AvoidColl()
+
+        if (status != 0) {
+            return null
+        }
+
+        return getIDNum(uid)
+    }
+
+    //% block="RFID read ID"
+    //% group="RFID"
+    //% subcategory="Sensor"
+    export function RFID_getID() {
+        let id = readID()
+        while (!(id)) {
+            id = readID()
+            if (id != undefined) {
+                return id
+            }
+        }
+        return id
+    }
+
+    //% block="RFID read data"
+    //% group="RFID"
+    //% subcategory="Sensor"
+    export function RFID_readData(): string {
+        let text = readFromCard()
+        while (!text) {
+            let text = readFromCard()
+
+            if (text != '') {
+                return text
+            }
+        }
+        return text
+    }
+
+
+    //% block="RFID write data %text to card"
+    //% text.defl="Acebott"
+    //% group="RFID"
+    //% subcategory="Sensor"
+    export function RFID_writeTocard(text: string) {
+        let id = writeToCard(text)
+
+        while (!id) {
+            let id = writeToCard(text)
+
+            if (id != undefined) {
+                return
+            }
+        }
+        return
+    }
+
+    //% block="RFID Module initialization"
+    //% group="RFID"
+    //% subcategory="Sensor"
+    export function RFID_init() {
+        // reset module
+        i2cwrite(MFRC522_ADDRESS, CommandReg, PCD_RESETPHASE)
+
+        i2cwrite(MFRC522_ADDRESS, 0x2A, 0x8D)
+        i2cwrite(MFRC522_ADDRESS, 0x2B, 0x3E)
+        i2cwrite(MFRC522_ADDRESS, 0x2D, 30)
+        i2cwrite(MFRC522_ADDRESS, 0x2E, 0)
+        i2cwrite(MFRC522_ADDRESS, 0x15, 0x40)
+        i2cwrite(MFRC522_ADDRESS, 0x11, 0x3D)
+        AntennaON()
+    }
+
+    // RC522 RFID @end
+
+    // Trace Sensor @start
+    let L_PIN = 0;
+    let M_PIN = 0;
+    let R_PIN = 0;
+
+
+    //% blockId=Trace_Sensor_getValue block="Trace Sensor get value %index"
+    //% group="Trace Sensor"
+    //% subcategory="Sensor"
+    export function Trace_Sensor_getValue(index: Trace_Sensor_Index): number {
+      switch (index) {
+          case 0:
+              return pins.analogReadPin(R_PIN)
+          case 1:
+              return pins.analogReadPin(M_PIN)
+          case 2:
+              return pins.analogReadPin(L_PIN)
+          default:
+              return -1
+      }
+    }
+
+    //% blockId=Trace_Sensor_init block="Trace Sensor set pin at (R:%rpin, M:|%mpin|, L:|%lpin)"
+    //% rpin.defl=AnalogReadPin.P0
+    //% mpin.defl=AnalogReadPin.P1
+    //% lpin.defl=AnalogReadPin.P2
+    //% group="Trace Sensor"
+    //% subcategory="Sensor"
+    export function Trace_Sensor_init(rpin: AnalogReadPin, mpin: AnalogReadPin, lpin: AnalogReadPin): void {
+      R_PIN = getAnalogPin(rpin)
+      M_PIN = getAnalogPin(mpin)
+      L_PIN = getAnalogPin(lpin)
+    }
+    // Trace Sensor @end
 }
