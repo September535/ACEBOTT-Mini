@@ -5,9 +5,7 @@
     "license": "MIT",
 "icon":"https://github.com/ACEBOTTteam/pxt-acebott/blob/main/icon_1.png",
     "dependencies": {
-        "core": "*",
-        "radio": "*",
-        "microphone": "*"
+        "core": "*"
     },
     "files": [
         "README.md",
@@ -18,10 +16,6 @@
         "test.ts"
     ],
     "public": true,
-    "targetVersions": {
-        "target": "6.0.22",
-        "pxt": "9.0.13"
-    },
     "supportedTargets": [
         "microbit"
     ],
