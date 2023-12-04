@@ -77,6 +77,43 @@ enum DigitalReadPin{
     P16 = 16
 }
 
+enum ServoPin{
+  //% block="P0"
+  P0 = 0,
+  //% block="P1"
+  P1 = 1,
+  //% block="P2"
+  P2 = 2,
+  //% block="P3"
+  P3 = 3,
+  //% block="P4"
+  P4 = 4,
+  //% block="P5"
+  P5 = 5,
+  //% block="P6"
+  P6 = 6,
+  //% block="P7"
+  P7 = 7,
+  //% block="P8"
+  P8 = 8,
+  //% block="P9"
+  P9 = 9,
+  //% block="P10"
+  P10 = 10,
+  //% block="P11"
+  P11 = 11,
+  //% block="P12"
+  P12 = 12,
+  //% block="P13(SCK)"
+  P13 = 13,
+  //% block="P14(MISO)"
+  P14 = 14,
+  //% block="P15(MOSI)"
+  P15 = 15,
+  //% block="P16"
+  P16 = 16
+}
+
 enum DistanceUnit {
     //% block="cm"
     CM = 0,
@@ -467,17 +504,29 @@ namespace Acebott{
     * @param index Servo Channel; eg: S1, S2
     * @param degree [0-180] degree of servo; eg: 0, 90, 180
    */
-   //% blockId=Servo block="Servo|%index|degree %degree"
+   //% blockId=Servo_IIC block="Servo|%index|degree %degree"
    //% degree.min=0 degree.max=180
    //% group="Servo"
    //% subcategory="Executive"
-   export function Servo(index: Servos, degree: number): void {
+   export function Servo_IIC(index: Servos, degree: number): void {
        if (!initialized) {
            initPCA9685()
        }
        let v_us = (degree * 1800 / 180 + 600)
        let value = v_us * 4096 / 20000
        setPwm(index * 5, 0, value)
+   }
+
+   //% blockId=Servo_IO block="Servo|%pin|degree %degree"
+   //% degree.min=0 degree.max=180
+   //% group="Servo"
+   //% subcategory="Executive"
+   export function Servo_IO(pin: ServoPin, degree: number): void{
+       let port = getAnalogPin(pin)
+       if (degree > 180) degree = 180
+       if (degree < 0) degree = 0
+
+       pins.servoWritePin(port, degree)
    }
 
     // RGB OnBoard @start
@@ -2100,4 +2149,6 @@ namespace Acebott{
       L_PIN = getAnalogPin(lpin)
     }
     // Trace Sensor @end
+
+
 }
