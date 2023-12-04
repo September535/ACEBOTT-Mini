@@ -25,6 +25,8 @@
   "Acebott.RGB_OnBoard|block": "板载RGB灯 |%index|显示(R:|%red|G:|%green|B:|%blue|)",
   "Acebott.RaindropSensor|block": "雨滴传感器接|%pin|读取值",
   "Acebott.Servo|block": "舵机|%index|设置角度为 %degree",
+  "Acebott.Servo_IIC|block": "舵机接|%index|设置角度为|%degree",
+  "Acebott.Servo_IO|block": "舵机接|%pin|设置角度为|%degree",
   "Acebott.SoundSensor|block": "声音传感器|%pin|读取值",
   "Acebott.Trace_Sensor_getValue|block": "巡线传感器获|%index|的取值 ",
   "Acebott.Trace_Sensor_init|block": "巡线传感器设置管脚 (R:%rpin, M:|%mpin|, L:|%lpin)",
