@@ -2165,6 +2165,4 @@ namespace Acebott{
       L_PIN = getAnalogPin(lpin)
     }
     // Trace Sensor @end
-
-
 }
