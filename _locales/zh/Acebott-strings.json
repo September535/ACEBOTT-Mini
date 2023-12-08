@@ -34,6 +34,7 @@
   "Acebott._130_DC_motor_run|block": "130直流电机接IN+| %_INA | IN- | %_INB | 速度为 %speed",
   "Acebott.dc_motor_run|block": "直流电机接|%index|运行速度为 %speed",
   "Acebott.isButtonPressed|block": "按钮模块接|%pin|被按下",
+  "Acebott.ledMatrixShowHex|block": "LED点阵显示HEX|%hex_num",
   "Acebott.setLaser|block": "激光模块接 %pin|设为 %status",
   "Acebott.setLedBrightness|block": "LED接%pin|设置亮度为|%v",
   "Acebott.setLed|block": "LED接 %pin| 设为 %status",
