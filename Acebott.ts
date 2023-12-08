@@ -499,6 +499,22 @@ namespace Acebott{
     }
     // LED @end
 
+    //% blockId=ledMatrixShowHex block="LED Matrix show Hex number %hex_num"
+    //% subcategory="Display"
+    //% group="LED Matrix"
+    export function ledMatrixShowHex(hex_num: number): void {
+      for(let i=0; i<25; i+=5){
+            for(let j=0;j<5;j++){
+                if((hex_num>>(i+j))&1){
+                    led.plot(j, i/5);
+                }
+                else{
+                    led.unplot(j, i/5);
+                }
+            }
+        }
+    }
+
     /**
     * Servo Execute
     * @param index Servo Channel; eg: S1, S2
