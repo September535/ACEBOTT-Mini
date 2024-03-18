@@ -23,6 +23,27 @@ enum AnalogWritePin{
     P2 = 2
 }
 
+enum UARTPin{
+    //% block="P0"
+    P0 = 0,
+    //% block="P1"
+    P1 = 1,
+    //% block="P2"
+    P2 = 2,
+    //% block="P8"
+    P8 = 8,
+    //% block="P12"
+    P12 = 12,
+    //% block="P13(SCK)"
+    P13 = 13,
+    //% block="P14(MISO)"
+    P14 = 14,
+    //% block="P15(MOSI)"
+    P15 = 15,
+    //% block="P16"
+    P16 = 16
+}
+
 enum DigitalWritePin{
     //% block="P0"
     P0 = 0,
@@ -417,6 +438,10 @@ namespace Acebott{
     }
 
     function getDigitalPin(pin_num: number): DigitalPin {
+        return getPort(pin_num)
+    }
+
+    function getUartPin(pin_num: number): SerialPin {
         return getPort(pin_num)
     }
 
@@ -2165,4 +2190,30 @@ namespace Acebott{
       L_PIN = getAnalogPin(lpin)
     }
     // Trace Sensor @end
+
+
+    // Voice Recognition @start
+
+    //% blockId="Voice_Recognition_Init" 
+    //% block="Voice Recognition set RX at %asrRX, TX at %asrTX"
+    //% asrRX.defl=UARTPin.P8
+    //% asrTX.defl=UARTPin.P12
+    //% group="Voice Recognition"
+    //% subcategory="AI Module"
+    export function Voice_Recognition_Init(asrRX: UARTPin, asrTX: UARTPin): void {
+        serial.redirect(getUartPin(asrRX), getUartPin(asrTX), BaudRate.BaudRate115200);
+    }
+
+    //% block="Voice Recognition getCMD"
+    //% blockId = Voice_Recognition_getCMD
+    //% group="Voice Recognition"
+    //% subcategory="AI Module"
+    export function Voice_Recognition_getCMD(): number {
+        let list: Buffer = null;
+        list = serial.readBuffer(0);
+        return list[0];
+    }
+    // Voice Recognition @end
+
+
 }
