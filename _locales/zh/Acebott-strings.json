@@ -31,6 +31,8 @@
   "Acebott.Trace_Sensor_getValue|block": "巡线传感器获|%index|的取值 ",
   "Acebott.Trace_Sensor_init|block": "巡线传感器设置管脚 (R:%rpin, M:|%mpin|, L:|%lpin)",
   "Acebott.UltrasonicDistance|block": "超声波传感器接Echo|%echo|Trig|%trig|读取距离 %unit",
+  "Acebott.Voice_Recognition_Init|block": "语音识别传感器RX接%asrRX|TX接%asrTX",
+  "Acebott.Voice_Recognition_getCMD|block": "语音识别传感器获取指令值",
   "Acebott._130_DC_motor_run|block": "130直流电机接IN+| %_INA | IN- | %_INB | 速度为 %speed",
   "Acebott.dc_motor_run|block": "直流电机接|%index|运行速度为 %speed",
   "Acebott.isButtonPressed|block": "按钮模块接|%pin|被按下",
@@ -71,6 +73,8 @@
   "{id:group}Temperature and Humidity": "温湿度传感器",
   "{id:group}Trace Sensor": "巡线传感器",
   "{id:group}Ultrasonic Sensor": "超声波传感器",
+  "{id:group}Voice Recognition": "语音识别传感器",
+  "{id:subcategory}AI Module": "人工智能类",
   "{id:subcategory}Display": "显示类",
   "{id:subcategory}Executive": "执行类",
   "{id:subcategory}Sensor": "传感类"
