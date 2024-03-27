@@ -2192,28 +2192,28 @@ namespace Acebott{
     // Trace Sensor @end
 
 
-    // Voice Recognition @start
+    // Speech Recognition @start
 
-    //% blockId="Voice_Recognition_Init" 
-    //% block="Voice Recognition set RX at %asrRX, TX at %asrTX"
-    //% asrRX.defl=UARTPin.P8
-    //% asrTX.defl=UARTPin.P12
-    //% group="Voice Recognition"
-    //% subcategory="AI Module"
-    export function Voice_Recognition_Init(asrRX: UARTPin, asrTX: UARTPin): void {
-        serial.redirect(getUartPin(asrRX), getUartPin(asrTX), BaudRate.BaudRate115200);
+    let speech_cmd = 0;
+
+    //% block="Speech Recognition getCMD is %cmd_in"
+    //% blockId = Speech_Recognition_getCMD
+    //% group="Speech Recognition"
+    //% subcategory="Sensor"
+    export function Speech_Recognition_getCMD(cmd_in: number): boolean {
+        return cmd_in == speech_cmd;
     }
 
-    //% block="Voice Recognition getCMD"
-    //% blockId = Voice_Recognition_getCMD
-    //% group="Voice Recognition"
-    //% subcategory="AI Module"
-    export function Voice_Recognition_getCMD(): number {
-        let list: Buffer = null;
-        list = serial.readBuffer(0);
-        return list[0];
+    //% blockId="Speech_Recognition_Init" 
+    //% block="Speech Recognition Init TX at %asrTX"
+    //% group="Speech Recognition"
+    //% subcategory="Sensor"
+    export function Speech_Recognition_Init(asrTX: UARTPin): void {
+        serial.redirect(SerialPin.USB_TX, getUartPin(asrTX), BaudRate.BaudRate115200);
+        basic.forever(function () {
+            let list = serial.readBuffer(1).toArray(NumberFormat.UInt8BE);
+            speech_cmd = list[0];
+        })
     }
-    // Voice Recognition @end
-
-
+    // Speech Recognition @end
 }
