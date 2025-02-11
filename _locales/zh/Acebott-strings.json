@@ -54,6 +54,10 @@
   "DHT11Type.Temperature_F|block": "华氏温度(℉)",
   "IR_ButtonAction.Pressed|block": "按下",
   "IR_ButtonAction.Released|block": "松开",
+
+  "Acebott.forward": "全速前进",
+  "Acebott.backforward": "全速前进",
+  
   "{id:category}Acebott": "Acebott",
   "{id:group}130 DC Motor": "130直流电机",
   "{id:group}4-Digit Tube": "4位数码管",

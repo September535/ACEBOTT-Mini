@@ -2107,7 +2107,7 @@ namespace Acebott{
 
     //% block="RFID read data"
     //% group="RFID"
-    //% subcategory="Sensor"
+    //% subcategory="Communication"
     export function RFID_readData(): string {
         let text = readFromCard()
         while (!text) {
@@ -2216,4 +2216,44 @@ namespace Acebott{
         })
     }
     // Speech Recognition @end
+
+
+
+    // Car  @start
+
+    /**
+    * TODO: full speed move forward,speed is 100.
+    */
+    //% blockId=cutebot_forward block="Go straight at full speed"
+    //% weight=40
+    export function forward(): void {
+        // Add code here
+        let buf = pins.createBuffer(4);
+        buf[0] = 0x01;
+        buf[1] = 0x02;
+        buf[2] = 0x02;
+        buf[3] = 40;
+        pins.i2cWriteBuffer(0x30, buf);
+
+    }
+
+    /**
+    * TODO: full speed move back,speed is -100.
+    */
+    //% blockId=cutebot_back block="Reverse at full speed"
+    //% weight=40
+    export function backforward(): void {
+        // Add code here
+        let buf = pins.createBuffer(4);
+        buf[0] = 0x01;
+        buf[1] = 0x01;
+        buf[2] = 0x01;
+        buf[3] = 40;
+        pins.i2cWriteBuffer(0x30, buf);
+
+    }
+
+    // Car  @end
+
+    
 }
