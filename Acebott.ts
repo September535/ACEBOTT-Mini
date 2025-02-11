@@ -2228,12 +2228,12 @@ namespace Acebott{
     //% weight=40
     export function forward(): void {
         // Add code here
-        let buf = pins.createBuffer(4);
+        let buf = pins.createBuffer(5);
         buf[0] = 0x01;
-        buf[1] = 0x02;
-        buf[2] = 0x02;
-        buf[3] = 40;
-        pins.i2cWriteBuffer(0x30, buf);
+        buf[1] = 0x01;
+        buf[2] = 0x01;
+        buf[3] = 0x02;
+        pins.i2cWriteBuffer(0X18, buf);
 
     }
 
@@ -2244,12 +2244,12 @@ namespace Acebott{
     //% weight=40
     export function backforward(): void {
         // Add code here
-        let buf = pins.createBuffer(4);
-        buf[0] = 0x01;
-        buf[1] = 0x01;
-        buf[2] = 0x01;
-        buf[3] = 40;
-        pins.i2cWriteBuffer(0x30, buf);
+        let buf = pins.createBuffer(5);
+        buf[0] = 0x02;
+        buf[1] = 0x02;
+        buf[2] = 0x02;
+        buf[2] = 0x03;
+        pins.i2cWriteBuffer(0x18, buf);
 
     }
 
