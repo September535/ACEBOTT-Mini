@@ -1,5 +1,5 @@
 {
-  "Acebott.DHT11_getvalue|block": "温湿度|%pin|读取值|%data_type",
+  "Acebott.DHT11_getvalue|block": "温湿度传感器接|%pin|读取值|%data_type",
   "Acebott.IRReceiver_init|block": "红外接收器接|%pin|",
   "Acebott.IR_isDecodeResult|block": "红外按键解码结果|%button",
   "Acebott.IR_DecodeResult|block": "红外按键解码结果",
@@ -81,4 +81,5 @@
   "{id:subcategory}Executive": "执行类",
   "{id:subcategory}Sensor": "传感类",
   "{id:subcategory}Communication": "通信类"
+  
 }
