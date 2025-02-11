@@ -79,7 +79,6 @@
   "{id:subcategory}AI Module": "人工智能类",
   "{id:subcategory}Display": "显示类",
   "{id:subcategory}Executive": "执行类",
-  "{id:subcategory}Sensor": "传感类"
+  "{id:subcategory}Sensor": "传感类",
   "{id:subcategory}communication": "通信类"
-
 }
