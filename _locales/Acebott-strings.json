@@ -43,6 +43,7 @@
   "Acebott.tm1650_showDecimal|block": "4-Digit Tube |named %name|show number|%n",
   "Acebott.tm1650_showString|block": "4-Digit Tube |named %name| show string|%s",
   "Acebott.moveTime|block": "Go %dir at speed%speed",
+  "Acebott.stopcar|block": "stop",
   "Acebott|block": "Acebott",
   "AnalogReadPin.P0|block": "P0",
   "AnalogReadPin.P1|block": "P1",
