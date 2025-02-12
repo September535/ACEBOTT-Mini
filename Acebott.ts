@@ -2217,24 +2217,8 @@ namespace Acebott{
     }
     // Speech Recognition @end
 
-    // I2C @start
-
-    //% block="I2C_address %dir data%data"
-    //% group="I2C_Data"
-    //% subcategory="Communication"
-
-    export function I2C_Data(dir: number, data: number) {
-        // 参数检查，确保设备地址有效
-        if (dir < 0 || dir > 127) {
-            return;
-        }
-
-        pins.i2cWriteNumber(dir, data, NumberFormat.Int8LE, true);
-    }
-
-    //I2C @end
-
     // RGB Colour @start
+
     //% block="RGB Flow Light"
     //% group="Microbit 小车"
     //% subcategory="Executive"
@@ -2252,13 +2236,13 @@ namespace Acebott{
     // Microbit Car  @start
 
     export enum Direction {
-        //% block="Forward" enumval=0
+        //% block="前进" enumval=0
         forward,
-        //% block="Backward" enumval=1
+        //% block="后退" enumval=1
         backward,
-        //% block="Left" enumval=2
+        //% block="左转" enumval=2
         left,
-        //% block="Right" enumval=3
+        //% block="右转" enumval=3
         right
     }
 
@@ -2276,6 +2260,62 @@ namespace Acebott{
         buf[3] = 0;	                        //速度	
         pins.i2cWriteBuffer(0x18, buf);     //数据发送
     }
+
+    /**
+         * TODO: Set the speed of left and right wheels. 
+         * @param lspeed Left wheel speed 
+         * @param rspeed Right wheel speed
+         */
+    //% blockId=MotorRun block="左轮速度 %lspeed\\% |右轮速度 %rspeed\\%"
+    //% lspeed.min=-100 lspeed.max=100
+    //% rspeed.min=-100 rspeed.max=100
+    //% weight=100
+    //% subcategory="Executive"
+    export function motors(lspeed: number = 50, rspeed: number = 50): void {
+        let buf = pins.createBuffer(4);
+        if (lspeed > 100) {
+            lspeed = 100;
+        } else if (lspeed < -100) {
+            lspeed = -100;
+        }
+        if (rspeed > 100) {
+            rspeed = 100;
+        } else if (rspeed < -100) {
+            rspeed = -100;
+        }
+        if (lspeed > 0) {
+            buf[0] = 0x00;                      //补位
+            buf[1] = 0x02;		                //左轮停止
+            buf[2] = 0x00;		                //右轮停止
+            buf[3] = lspeed;	                        //速度
+            pins.i2cWriteBuffer(0x18, buf);     //数据发送
+        }
+        else {
+            lspeed = ~lspeed;
+            buf[0] = 0x00;                      //补位
+            buf[1] = 0x01;		                //左轮停止
+            buf[2] = 0x00;		                //右轮停止
+            buf[3] = lspeed;	                        //速度
+            pins.i2cWriteBuffer(0x18, buf);     //数据发送
+        }
+        if (rspeed > 0) {
+            buf[0] = 0x00;                      //补位
+            buf[1] = 0x00;		                //左轮停止
+            buf[2] = 0x02;		                //右轮停止
+            buf[3] = rspeed;	                        //速度
+            pins.i2cWriteBuffer(0x18, buf);     //数据发送
+        }
+        else {
+            rspeed = ~rspeed;
+            buf[0] = 0x00;                      //补位
+            buf[1] = 0x00;		                //左轮停止
+            buf[2] = 0x01;		                //右轮停止
+            buf[3] = rspeed;	                        //速度
+            pins.i2cWriteBuffer(0x18, buf);     //数据发送
+        }
+
+    }
+
 
     //% subcategory="Executive"
     //% block="Go %dir at speed%speed"
@@ -2318,5 +2358,4 @@ namespace Acebott{
 
     // Microbit Car  @end
 
-    
 }
