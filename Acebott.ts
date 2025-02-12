@@ -2217,24 +2217,39 @@ namespace Acebott{
     }
     // Speech Recognition @end
 
+    // I2C @start
+
+    //% block="I2C_address %dir data%data"
+    //% group="I2C_Data"
+    //% subcategory="Communication"
+
+    export function I2C_Data(dir: number, data: number) {
+        // 参数检查，确保设备地址有效
+        if (dir < 0 || dir > 127) {
+            return;
+        }
+
+        pins.i2cWriteNumber(dir, data, NumberFormat.Int8LE, true);
+    }
+
+    //I2C @end
 
     // RGB Colour @start
-
-    //% blockId=Acebott_Colour block="RGB Flow Light"
-    //% group="Microbit Car"
+    //% block="RGB Flow Light"
+    //% group="Microbit 小车"
     //% subcategory="Executive"
     export function RGB_Colour() {
         let buf = pins.createBuffer(4);
-        buf[0] = 0x00;      //补位
-        buf[1] = 0x04;		
-        buf[2] = 0x00;		
-        buf[3] = 0x00;	    	
-        pins.i2cWriteBuffer(0x18, buf);
+        buf[0] = 0x00;                  //补位
+        buf[1] = 0x04;		            //RGB模式
+        buf[2] = 0x00;		            //补位
+        buf[3] = 0x00;	                //补位
+        pins.i2cWriteBuffer(0x18, buf); //数据发送
     }
     // RGB Colour @end
 
 
-    // Car  @start
+    // Microbit Car  @start
 
     export enum Direction {
         //% block="Forward" enumval=0
@@ -2250,64 +2265,58 @@ namespace Acebott{
     /**
     * TODO: stopcar
     */
-    //% blockId=Acebott_stopcar block="Stop car immediately"
+    //% block="Stop car immediately"
     //% subcategory="Executive"
     //% weight=70
     export function stopcar(): void {
         let buf = pins.createBuffer(4);
-        buf[0] = 0x00;      //补位
-        buf[1] = 0x00;		//正反转0x02前进  0x01后退
-        buf[2] = 0x00;		//正反转0x02前进  0x01后退
-        buf[3] = 0;	//速度	
-        pins.i2cWriteBuffer(0x18, buf);
+        buf[0] = 0x00;                      //补位
+        buf[1] = 0x00;		                //左轮停止
+        buf[2] = 0x00;		                //右轮停止
+        buf[3] = 0;	                        //速度	
+        pins.i2cWriteBuffer(0x18, buf);     //数据发送
     }
 
-    /**
-    * TODO: Full speed operation lasts for 10 seconds,speed is 100.
-    * @param dir Driving direction
-    * @param speed Running speed
-    * @param time Travel time
-    */
     //% subcategory="Executive"
-    //% blockId=Acebott_move block="Go %dir at speed%speed"
+    //% block="Go %dir at speed%speed"
     //% weight=95
     export function moveTime(dir: Direction, speed: number): void {
         let buf = pins.createBuffer(4);
-        if (dir == 0) {
-            buf[0] = 0x00;      //补位
-            buf[1] = 0x02;		//正反转0x02前进  0x01后退
-            buf[2] = 0x02;		//正反转0x02前进  0x01后退
-            buf[3] = speed;	    //速度
+        if (dir == 0) {                      //小车前进
+            buf[0] = 0x00;                   //补位
+            buf[1] = 0x02;		             //左轮前进
+            buf[2] = 0x02;		             //右轮前进
+            buf[3] = speed;	                 //速度
 
-            pins.i2cWriteBuffer(0x18, buf);  //写入左轮
+            pins.i2cWriteBuffer(0x18, buf);  //数据发送
         }
-        if (dir == 1) {
-            buf[0] = 0x00;      //补位
-            buf[1] = 0x01;		//正反转0x02前进  0x01后退
-            buf[2] = 0x01;		//正反转0x02前进  0x01后退
-            buf[3] = speed;	//速度
-
-            pins.i2cWriteBuffer(0x18, buf);  //写入左轮
+        if (dir == 1) {                      //小车后退
+            buf[0] = 0x00;                   //补位
+            buf[1] = 0x01;		             //左轮后退
+            buf[2] = 0x01;		             //右轮后退
+            buf[3] = speed;	                 //速度
+             
+            pins.i2cWriteBuffer(0x18, buf);  //数据发送
         }
-        if (dir == 2) {
-            buf[0] = 0x00;      //补位
-            buf[1] = 0x01;		//正反转0x02前进  0x01后退
-            buf[2] = 0x02;		//正反转0x02前进  0x01后退
-            buf[3] = speed;	//速度
+        if (dir == 2) {                      //小车左转
+            buf[0] = 0x00;                   //补位
+            buf[1] = 0x01;		             //左轮后退
+            buf[2] = 0x02;		             //右轮前进
+            buf[3] = speed;	                 //速度
 
-            pins.i2cWriteBuffer(0x18, buf);  //写入左轮
+            pins.i2cWriteBuffer(0x18, buf);  //数据发送
         }
-        if (dir == 3) {
-            buf[0] = 0x00;      //补位
-            buf[1] = 0x02;		//正反转0x02前进  0x01后退
-            buf[2] = 0x01;		//正反转0x02前进  0x01后退
-            buf[3] = speed;	//速度
+        if (dir == 3) {                     //小车右转
+            buf[0] = 0x00;                  //补位
+            buf[1] = 0x02;		            //左轮前进
+            buf[2] = 0x01;		            //右轮后退
+            buf[3] = speed;	                //速度
 
-            pins.i2cWriteBuffer(0x18, buf);  //写入左轮
+            pins.i2cWriteBuffer(0x18, buf); //数据发送
         }
     }
 
-    // Car  @end
+    // Microbit Car  @end
 
     
 }
