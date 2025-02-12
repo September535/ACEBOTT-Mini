@@ -54,7 +54,8 @@
   "DHT11Type.Temperature_F|block": "华氏温度(℉)",
   "IR_ButtonAction.Pressed|block": "按下",
   "IR_ButtonAction.Released|block": "松开",
-  "Acebott.moveTime|block": "朝 %dir 以速度 %speed\\% ",
+  "Acebott.stopcar|block": "停止",
+  "Acebott.moveTime|block": "向 %dir 以速度 %speed\\% ", 
   "Acebott.moveTime|param|dir": "设定行駛方向",
   "Acebott.moveTime|param|speed": "设定行駛速度",
 
