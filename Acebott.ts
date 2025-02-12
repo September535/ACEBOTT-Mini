@@ -2225,8 +2225,7 @@ namespace Acebott{
     * TODO: full speed move forward,speed is 100.
     */
     //% blockId=cutebot_forward block="Go straight at full speed"
-    //% weight=40
-    //% subcategory="Communication"
+    //% weight=90
     export function forward(): void {
         // Add code here
         let buf = pins.createBuffer(5);
@@ -2234,27 +2233,167 @@ namespace Acebott{
         buf[1] = 0x01;
         buf[2] = 0x02;
         buf[3] = 0x02;
-        buf[4] = 40;
-        pins.i2cWriteBuffer(0X18, buf);
-
+        buf[4] = 0x02;
+        pins.i2cWriteBuffer(0x18, buf);
     }
+
 
     /**
     * TODO: full speed move back,speed is -100.
     */
     //% blockId=cutebot_back block="Reverse at full speed"
-    //% weight=40
-    //% subcategory="Communication"
+    //% weight=85
     export function backforward(): void {
         // Add code here
         let buf = pins.createBuffer(5);
         buf[0] = 0x00;
         buf[1] = 0x01;
-        buf[2] = 0x01;
-        buf[3] = 0x01;
-        buf[4] = 40;
+        buf[2] = 0x02;
+        buf[3] = 0x02;
+        buf[4] = 0x02;
         pins.i2cWriteBuffer(0x18, buf);
 
+    }
+    /**
+    * TODO: full speed turnleft.
+    */
+    //% blockId=cutebot_left block="Turn left at full speed"
+    //% weight=80
+    export function turnleft(): void {
+        // Add code here
+        let buf = pins.createBuffer(5);
+        buf[0] = 0x00;
+        buf[1] = 0x01;
+        buf[2] = 0x02;
+        buf[3] = 0x02;
+        buf[4] = 0x02;
+        pins.i2cWriteBuffer(0x18, buf);
+    }
+    /**
+    * TODO: full speed turnright.
+    */
+    //% blockId=cutebot_right block="Turn right at full speed"
+    //% weight=75
+    export function turnright(): void {
+        // Add code here
+        let buf = pins.createBuffer(5);
+        buf[0] = 0x00;
+        buf[1] = 0x01;
+        buf[2] = 0x02;
+        buf[3] = 0x02;
+        buf[4] = 0x02;
+        pins.i2cWriteBuffer(0x18, buf);
+    }
+
+    export enum Direction {
+        //% block="Forward" enumval=0
+        forward,
+        //% block="Backward" enumval=1
+        backward,
+        //% block="Left" enumval=2
+        left,
+        //% block="Right" enumval=3
+        right
+    }
+
+    /**
+    * TODO: stopcar
+    */
+    //% blockId=cutebot_stopcar block="Stop car immediately"
+    //% weight=70
+    export function stopcar(): void {
+        let buf = pins.createBuffer(5);
+        buf[0] = 0x00;
+        buf[1] = 0x01;
+        buf[2] = 0x02;
+        buf[3] = 0x02;
+        buf[4] = 0x02;
+        pins.i2cWriteBuffer(0x18, buf);
+    }
+
+    /**
+     * TODO: Set the speed of left and right wheels. 
+     * @param lspeed Left wheel speed 
+     * @param rspeed Right wheel speed
+     */
+    //% blockId=MotorRun block="Set left wheel speed %lspeed\\% |right wheel speed %rspeed\\%"
+    //% lspeed.min=-100 lspeed.max=100
+    //% rspeed.min=-100 rspeed.max=100
+
+    //% weight=100
+    export function motors(lspeed: number = 50, rspeed: number = 50): void {
+        let buf = pins.createBuffer(4);
+        if (lspeed > 100) {
+            lspeed = 100;
+        } else if (lspeed < -100) {
+            lspeed = -100;
+        }
+        if (rspeed > 100) {
+            rspeed = 100;
+        } else if (rspeed < -100) {
+            rspeed = -100;
+        }
+        if (lspeed > 0) {
+            buf[0] = 0x00;      //补位
+            buf[1] = 0x02;		//正反转0x02前进  0x01后退
+            buf[2] = 0x02;		//正反转0x02前进  0x01后退
+            buf[3] = lspeed;	//速度	
+            pins.i2cWriteBuffer(0x18, buf);  //写入左轮
+        }
+        else {
+            buf[0] = 0x00;      //补位
+            buf[1] = 0x01;		//正反转0x02前进  0x01后退
+            buf[2] = 0x01;		//正反转0x02前进  0x01后退
+            buf[3] = lspeed * -1;	//速度	
+            pins.i2cWriteBuffer(0x18, buf);  //写入左轮
+        }
+        if (rspeed > 0) {
+            buf[0] = 0x00;      //补位
+            buf[1] = 0x01;		//正反转0x02前进  0x01后退
+            buf[2] = 0x02;		//正反转0x02前进  0x01后退
+            buf[3] = lspeed;	//速度	
+            pins.i2cWriteBuffer(0x18, buf);  //写入左轮
+        }
+        else {
+            buf[0] = 0x00;      //补位
+            buf[1] = 0x02;		//正反转0x02前进  0x01后退
+            buf[2] = 0x01;		//正反转0x02前进  0x01后退
+            buf[3] = lspeed * -1;	//速度
+            pins.i2cWriteBuffer(0x18, buf);  //写入左轮
+        }
+
+    }
+
+    /**
+    * TODO: Full speed operation lasts for 10 seconds,speed is 100.
+    * @param dir Driving direction
+    * @param speed Running speed
+    * @param time Travel time
+    */
+
+    //% blockId=cutebot_move_time block="Go %dir at speed%speed\\% for %time seconds"
+    //% weight=95
+    export function moveTime(dir: Direction, speed: number, time: number): void {
+        if (dir == 0) {
+            motors(speed, speed);
+            basic.pause(time * 1000)
+            motors(0, 0)
+        }
+        if (dir == 1) {
+            motors(-speed, -speed);
+            basic.pause(time * 1000)
+            motors(0, 0)
+        }
+        if (dir == 2) {
+            motors(-speed, speed);
+            basic.pause(time * 1000)
+            motors(0, 0)
+        }
+        if (dir == 3) {
+            motors(speed, -speed);
+            basic.pause(time * 1000)
+            motors(0, 0)
+        }
     }
 
     // Car  @end
