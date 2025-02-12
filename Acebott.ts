@@ -2221,70 +2221,6 @@ namespace Acebott{
 
     // Car  @start
 
-    /**
-    * TODO: full speed move forward,speed is 100.
-    */
-    //% blockId=cutebot_forward block="Go straight at full speed"
-    //% weight=90
-    export function forward(): void {
-        // Add code here
-        let buf = pins.createBuffer(5);
-        buf[0] = 0x00;
-        buf[1] = 0x01;
-        buf[2] = 0x02;
-        buf[3] = 0x02;
-        buf[4] = 0x02;
-        pins.i2cWriteBuffer(0x18, buf);
-    }
-
-
-    /**
-    * TODO: full speed move back,speed is -100.
-    */
-    //% blockId=cutebot_back block="Reverse at full speed"
-    //% weight=85
-    export function backforward(): void {
-        // Add code here
-        let buf = pins.createBuffer(5);
-        buf[0] = 0x00;
-        buf[1] = 0x01;
-        buf[2] = 0x02;
-        buf[3] = 0x02;
-        buf[4] = 0x02;
-        pins.i2cWriteBuffer(0x18, buf);
-
-    }
-    /**
-    * TODO: full speed turnleft.
-    */
-    //% blockId=cutebot_left block="Turn left at full speed"
-    //% weight=80
-    export function turnleft(): void {
-        // Add code here
-        let buf = pins.createBuffer(5);
-        buf[0] = 0x00;
-        buf[1] = 0x01;
-        buf[2] = 0x02;
-        buf[3] = 0x02;
-        buf[4] = 0x02;
-        pins.i2cWriteBuffer(0x18, buf);
-    }
-    /**
-    * TODO: full speed turnright.
-    */
-    //% blockId=cutebot_right block="Turn right at full speed"
-    //% weight=75
-    export function turnright(): void {
-        // Add code here
-        let buf = pins.createBuffer(5);
-        buf[0] = 0x00;
-        buf[1] = 0x01;
-        buf[2] = 0x02;
-        buf[3] = 0x02;
-        buf[4] = 0x02;
-        pins.i2cWriteBuffer(0x18, buf);
-    }
-
     export enum Direction {
         //% block="Forward" enumval=0
         forward,
@@ -2300,14 +2236,14 @@ namespace Acebott{
     * TODO: stopcar
     */
     //% blockId=cutebot_stopcar block="Stop car immediately"
+    //% subcategory="Communication"
     //% weight=70
     export function stopcar(): void {
-        let buf = pins.createBuffer(5);
-        buf[0] = 0x00;
-        buf[1] = 0x01;
-        buf[2] = 0x02;
-        buf[3] = 0x02;
-        buf[4] = 0x02;
+        let buf = pins.createBuffer(4);
+        buf[0] = 0x00;      //补位
+        buf[1] = 0x00;		//正反转0x02前进  0x01后退
+        buf[2] = 0x00;		//正反转0x02前进  0x01后退
+        buf[3] = 0;	//速度	
         pins.i2cWriteBuffer(0x18, buf);
     }
 
