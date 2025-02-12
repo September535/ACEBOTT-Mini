@@ -2107,7 +2107,7 @@ namespace Acebott{
 
     //% block="RFID read data"
     //% group="RFID"
-    //% subcategory="Communication"
+    //% subcategory="Sensor"
     export function RFID_readData(): string {
         let text = readFromCard()
         while (!text) {
@@ -2226,13 +2226,15 @@ namespace Acebott{
     */
     //% blockId=cutebot_forward block="Go straight at full speed"
     //% weight=40
+    //% subcategory="Communication"
     export function forward(): void {
         // Add code here
         let buf = pins.createBuffer(5);
-        buf[0] = 0x01;
+        buf[0] = 0x00;
         buf[1] = 0x01;
-        buf[2] = 0x01;
+        buf[2] = 0x02;
         buf[3] = 0x02;
+        buf[4] = 40;
         pins.i2cWriteBuffer(0X18, buf);
 
     }
@@ -2242,13 +2244,15 @@ namespace Acebott{
     */
     //% blockId=cutebot_back block="Reverse at full speed"
     //% weight=40
+    //% subcategory="Communication"
     export function backforward(): void {
         // Add code here
         let buf = pins.createBuffer(5);
-        buf[0] = 0x02;
-        buf[1] = 0x02;
-        buf[2] = 0x02;
-        buf[2] = 0x03;
+        buf[0] = 0x00;
+        buf[1] = 0x01;
+        buf[2] = 0x01;
+        buf[3] = 0x01;
+        buf[4] = 40;
         pins.i2cWriteBuffer(0x18, buf);
 
     }
