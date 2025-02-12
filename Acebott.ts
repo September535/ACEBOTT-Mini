@@ -2319,7 +2319,7 @@ namespace Acebott{
     //% blockId=MotorRun block="Set left wheel speed %lspeed\\% |right wheel speed %rspeed\\%"
     //% lspeed.min=-100 lspeed.max=100
     //% rspeed.min=-100 rspeed.max=100
-
+    //% subcategory="Communication"
     //% weight=100
     export function motors(lspeed: number = 50, rspeed: number = 50): void {
         let buf = pins.createBuffer(4);
@@ -2370,7 +2370,7 @@ namespace Acebott{
     * @param speed Running speed
     * @param time Travel time
     */
-
+    //% subcategory="Communication"
     //% blockId=cutebot_move_time block="Go %dir at speed%speed\\% for %time seconds"
     //% weight=95
     export function moveTime(dir: Direction, speed: number, time: number): void {
