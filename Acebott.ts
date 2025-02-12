@@ -2280,7 +2280,7 @@ namespace Acebott{
             buf[0] = 0x00;      //补位
             buf[1] = 0x01;		//正反转0x02前进  0x01后退
             buf[2] = 0x01;		//正反转0x02前进  0x01后退
-            buf[3] = lspeed * -1;	//速度	
+            buf[3] = lspeed;	//速度	
             pins.i2cWriteBuffer(0x18, buf);  //写入左轮
         }
         if (rspeed > 0) {
@@ -2294,7 +2294,7 @@ namespace Acebott{
             buf[0] = 0x00;      //补位
             buf[1] = 0x02;		//正反转0x02前进  0x01后退
             buf[2] = 0x01;		//正反转0x02前进  0x01后退
-            buf[3] = lspeed * -1;	//速度
+            buf[3] = lspeed;	//速度
             pins.i2cWriteBuffer(0x18, buf);  //写入左轮
         }
 
@@ -2307,28 +2307,41 @@ namespace Acebott{
     * @param time Travel time
     */
     //% subcategory="Communication"
-    //% blockId=cutebot_move_time block="Go %dir at speed%speed\\% for %time seconds"
+    //% blockId=cutebot_move_time block="Go %dir at speed%speed\\%"
     //% weight=95
-    export function moveTime(dir: Direction, speed: number, time: number): void {
+    export function moveTime(dir: Direction, speed: number): void {
+        let buf = pins.createBuffer(4);
         if (dir == 0) {
-            motors(speed, speed);
-            basic.pause(time * 1000)
-            motors(0, 0)
+            buf[0] = 0x00;      //补位
+            buf[1] = 0x02;		//正反转0x02前进  0x01后退
+            buf[2] = 0x02;		//正反转0x02前进  0x01后退
+            buf[3] = speed;	    //速度
+
+            pins.i2cWriteBuffer(0x18, buf);  //写入左轮
         }
         if (dir == 1) {
-            motors(-speed, -speed);
-            basic.pause(time * 1000)
-            motors(0, 0)
+            buf[0] = 0x00;      //补位
+            buf[1] = 0x01;		//正反转0x02前进  0x01后退
+            buf[2] = 0x01;		//正反转0x02前进  0x01后退
+            buf[3] = speed;	//速度
+
+            pins.i2cWriteBuffer(0x18, buf);  //写入左轮
         }
         if (dir == 2) {
-            motors(-speed, speed);
-            basic.pause(time * 1000)
-            motors(0, 0)
+            buf[0] = 0x00;      //补位
+            buf[1] = 0x01;		//正反转0x02前进  0x01后退
+            buf[2] = 0x02;		//正反转0x02前进  0x01后退
+            buf[3] = speed;	//速度
+
+            pins.i2cWriteBuffer(0x18, buf);  //写入左轮
         }
         if (dir == 3) {
-            motors(speed, -speed);
-            basic.pause(time * 1000)
-            motors(0, 0)
+            buf[0] = 0x00;      //补位
+            buf[1] = 0x02;		//正反转0x02前进  0x01后退
+            buf[2] = 0x01;		//正反转0x02前进  0x01后退
+            buf[3] = speed;	//速度
+
+            pins.i2cWriteBuffer(0x18, buf);  //写入左轮
         }
     }
 
