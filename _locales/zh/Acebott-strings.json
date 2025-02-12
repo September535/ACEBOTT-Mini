@@ -55,9 +55,8 @@
   "IR_ButtonAction.Pressed|block": "按下",
   "IR_ButtonAction.Released|block": "松开",
 
-  "Acebott.forward": "全速前进",
-  "Acebott.backforward": "全速前进",
-  
+  "Acebott.moveTime|block": "朝 %dir 以速度 %speed\\% ",
+
   "{id:category}Acebott": "Acebott",
   "{id:group}130 DC Motor": "130直流电机",
   "{id:group}4-Digit Tube": "4位数码管",

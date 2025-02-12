@@ -2218,6 +2218,21 @@ namespace Acebott{
     // Speech Recognition @end
 
 
+    // RGB Colour @start
+
+    //% blockId=Acebott_Colour block="RGB Flow Light"
+    //% group="Microbit Car"
+    //% subcategory="Executive"
+    export function RGB_Colour() {
+        let buf = pins.createBuffer(4);
+        buf[0] = 0x00;      //补位
+        buf[1] = 0x04;		
+        buf[2] = 0x00;		
+        buf[3] = 0x00;	    	
+        pins.i2cWriteBuffer(0x18, buf);
+    }
+    // RGB Colour @end
+
 
     // Car  @start
 
@@ -2235,8 +2250,8 @@ namespace Acebott{
     /**
     * TODO: stopcar
     */
-    //% blockId=cutebot_stopcar block="Stop car immediately"
-    //% subcategory="Communication"
+    //% blockId=Acebott_stopcar block="Stop car immediately"
+    //% subcategory="Executive"
     //% weight=70
     export function stopcar(): void {
         let buf = pins.createBuffer(4);
@@ -2248,66 +2263,13 @@ namespace Acebott{
     }
 
     /**
-     * TODO: Set the speed of left and right wheels. 
-     * @param lspeed Left wheel speed 
-     * @param rspeed Right wheel speed
-     */
-    //% blockId=MotorRun block="Set left wheel speed %lspeed\\% |right wheel speed %rspeed\\%"
-    //% lspeed.min=-100 lspeed.max=100
-    //% rspeed.min=-100 rspeed.max=100
-    //% subcategory="Communication"
-    //% weight=100
-    export function motors(lspeed: number = 50, rspeed: number = 50): void {
-        let buf = pins.createBuffer(4);
-        if (lspeed > 100) {
-            lspeed = 100;
-        } else if (lspeed < -100) {
-            lspeed = -100;
-        }
-        if (rspeed > 100) {
-            rspeed = 100;
-        } else if (rspeed < -100) {
-            rspeed = -100;
-        }
-        if (lspeed > 0) {
-            buf[0] = 0x00;      //补位
-            buf[1] = 0x02;		//正反转0x02前进  0x01后退
-            buf[2] = 0x02;		//正反转0x02前进  0x01后退
-            buf[3] = lspeed;	//速度	
-            pins.i2cWriteBuffer(0x18, buf);  //写入左轮
-        }
-        else {
-            buf[0] = 0x00;      //补位
-            buf[1] = 0x01;		//正反转0x02前进  0x01后退
-            buf[2] = 0x01;		//正反转0x02前进  0x01后退
-            buf[3] = lspeed;	//速度	
-            pins.i2cWriteBuffer(0x18, buf);  //写入左轮
-        }
-        if (rspeed > 0) {
-            buf[0] = 0x00;      //补位
-            buf[1] = 0x01;		//正反转0x02前进  0x01后退
-            buf[2] = 0x02;		//正反转0x02前进  0x01后退
-            buf[3] = lspeed;	//速度	
-            pins.i2cWriteBuffer(0x18, buf);  //写入左轮
-        }
-        else {
-            buf[0] = 0x00;      //补位
-            buf[1] = 0x02;		//正反转0x02前进  0x01后退
-            buf[2] = 0x01;		//正反转0x02前进  0x01后退
-            buf[3] = lspeed;	//速度
-            pins.i2cWriteBuffer(0x18, buf);  //写入左轮
-        }
-
-    }
-
-    /**
     * TODO: Full speed operation lasts for 10 seconds,speed is 100.
     * @param dir Driving direction
     * @param speed Running speed
     * @param time Travel time
     */
-    //% subcategory="Communication"
-    //% blockId=cutebot_move_time block="Go %dir at speed%speed\\%"
+    //% subcategory="Executive"
+    //% blockId=Acebott_move block="Go %dir at speed%speed\\%"
     //% weight=95
     export function moveTime(dir: Direction, speed: number): void {
         let buf = pins.createBuffer(4);
