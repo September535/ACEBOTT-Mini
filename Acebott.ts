@@ -2269,7 +2269,7 @@ namespace Acebott{
     * @param time Travel time
     */
     //% subcategory="Executive"
-    //% blockId=Acebott_move block="Go %dir at speed%speed\\%"
+    //% blockId=Acebott_move block="Go %dir at speed%speed"
     //% weight=95
     export function moveTime(dir: Direction, speed: number): void {
         let buf = pins.createBuffer(4);
