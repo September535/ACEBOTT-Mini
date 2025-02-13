@@ -2253,11 +2253,13 @@ namespace Acebott{
     //% subcategory="Executive"
     //% weight=70
     export function stopcar(): void {
-        let buf = pins.createBuffer(4);
+        let buf = pins.createBuffer(5);
         buf[0] = 0x00;                      //补位
         buf[1] = 0x00;		                //左轮停止
         buf[2] = 0x00;		                //右轮停止
         buf[3] = 0;	                        //速度	
+        buf[4] = 0;	                        //速度	
+
         pins.i2cWriteBuffer(0x18, buf);     //数据发送
     }
 
@@ -2272,7 +2274,7 @@ namespace Acebott{
     //% weight=100
     //% subcategory="Executive"
     export function motors(lspeed: number = 50, rspeed: number = 50): void {
-        let buf = pins.createBuffer(4);
+        let buf = pins.createBuffer(5);
         if (lspeed > 100) {
             lspeed = 100;
         } else if (lspeed < -100) {
@@ -2286,33 +2288,30 @@ namespace Acebott{
         if (lspeed > 0) {
             buf[0] = 0x00;                      //补位
             buf[1] = 0x02;		                //左轮停止
-            buf[2] = 0x00;		                //右轮停止
-            buf[3] = lspeed;	                        //速度
-            pins.i2cWriteBuffer(0x18, buf);     //数据发送
+            buf[3] = lspeed;	                //速度
+
         }
         else {
             lspeed = ~lspeed;
             buf[0] = 0x00;                      //补位
             buf[1] = 0x01;		                //左轮停止
-            buf[2] = 0x00;		                //右轮停止
-            buf[3] = lspeed;	                        //速度
-            pins.i2cWriteBuffer(0x18, buf);     //数据发送
+            buf[3] = lspeed;	                //速度
+ 
         }
         if (rspeed > 0) {
             buf[0] = 0x00;                      //补位
-            buf[1] = 0x00;		                //左轮停止
             buf[2] = 0x02;		                //右轮停止
-            buf[3] = rspeed;	                        //速度
-            pins.i2cWriteBuffer(0x18, buf);     //数据发送
+            buf[4] = rspeed;	                        //速度
+
         }
         else {
             rspeed = ~rspeed;
             buf[0] = 0x00;                      //补位
-            buf[1] = 0x00;		                //左轮停止
             buf[2] = 0x01;		                //右轮停止
-            buf[3] = rspeed;	                        //速度
-            pins.i2cWriteBuffer(0x18, buf);     //数据发送
+            buf[4] = rspeed;	                        //速度
+          
         }
+        pins.i2cWriteBuffer(0x18, buf);     //数据发送
 
     }
 
@@ -2321,12 +2320,13 @@ namespace Acebott{
     //% block="Go %dir at speed%speed"
     //% weight=95
     export function moveTime(dir: Direction, speed: number): void {
-        let buf = pins.createBuffer(4);
+        let buf = pins.createBuffer(5);
         if (dir == 0) {                      //小车前进
             buf[0] = 0x00;                   //补位
             buf[1] = 0x02;		             //左轮前进
             buf[2] = 0x02;		             //右轮前进
             buf[3] = speed;	                 //速度
+            buf[4] = speed;	                 //速度
 
             pins.i2cWriteBuffer(0x18, buf);  //数据发送
         }
@@ -2335,7 +2335,8 @@ namespace Acebott{
             buf[1] = 0x01;		             //左轮后退
             buf[2] = 0x01;		             //右轮后退
             buf[3] = speed;	                 //速度
-             
+            buf[4] = speed;	                 //速度
+
             pins.i2cWriteBuffer(0x18, buf);  //数据发送
         }
         if (dir == 2) {                      //小车左转
@@ -2343,6 +2344,7 @@ namespace Acebott{
             buf[1] = 0x01;		             //左轮后退
             buf[2] = 0x02;		             //右轮前进
             buf[3] = speed;	                 //速度
+            buf[4] = speed;	                 //速度
 
             pins.i2cWriteBuffer(0x18, buf);  //数据发送
         }
@@ -2351,7 +2353,8 @@ namespace Acebott{
             buf[1] = 0x02;		            //左轮前进
             buf[2] = 0x01;		            //右轮后退
             buf[3] = speed;	                //速度
-
+            buf[4] = speed;	                 //速度
+            
             pins.i2cWriteBuffer(0x18, buf); //数据发送
         }
     }
