@@ -2217,20 +2217,54 @@ namespace Acebott{
     }
     // Speech Recognition @end
 
-    // RGB Colour @start
-
-    //% block="RGB Flow Light"
-    //% group="Microbit 小车"
-    //% subcategory="Executive"
-    export function RGB_Colour() {
-        let buf = pins.createBuffer(4);
-        buf[0] = 0x00;                  //补位
-        buf[1] = 0x04;		            //RGB模式
-        buf[2] = 0x00;		            //补位
-        buf[3] = 0x00;	                //补位
-        pins.i2cWriteBuffer(0x18, buf); //数据发送
+    /**
+    * Select the RGBLights on the left or right
+    */
+    export enum RGBLights {
+        //% blockId="Right_RGB" block="Right_RGB"
+        RGB_L = 1,
+        //% blockId="Left_RGB" block="Left_RGB"
+        RGB_R = 0,
+        //% blockId="ALL" block="ALL"
+        ALL = 3
     }
-    // RGB Colour @end
+
+    /**
+    * TODO: Set LED headlights.
+    */
+    //% block="Set LED headlights %light color $color"
+    //% color.shadow="colorNumberPicker"
+    //% weight=65
+    export function colorLight(light: RGBLights, color: number) {
+        let r: number, g: number, b: number = 0
+        r = color >> 16
+        g = (color >> 8) & 0xFF
+        b = color & 0xFF
+        singleheadlights(light, r, g, b)
+    }
+    /**
+    * TODO: Select a headlights and set the RGB color.
+    * @param R R color value of RGB color
+    * @param G G color value of RGB color
+    * @param B B color value of RGB color
+    */
+    //% inlineInputMode=inline
+    //% blockId=RGB block="Set LED headlights %light color R:%r G:%g B:%b"
+    //% r.min=0 r.max=255
+    //% g.min=0 g.max=255
+    //% b.min=0 b.max=255
+    //% weight=60
+    export function singleheadlights(light: RGBLights, r: number, g: number, b: number): void {
+        let buf = pins.createBuffer(5);
+        buf[0] = 0x00;                      //补位
+        buf[1] = r;		                //左轮停止
+        buf[2] = g;		                //右轮停止
+        buf[3] = b;
+        buf[4] = 0x04;
+
+        pins.i2cWriteBuffer(0x18, buf);     //数据发送
+
+    }
 
 
     // Microbit Car  @start
