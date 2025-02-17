@@ -2387,34 +2387,79 @@ namespace Acebott{
     }
 
     // trackSide Car  @start
-
-    //% subcategory="Executive"
-    export enum MbPins {
-        //% block="左" 
-        Left = DAL.MICROBIT_ID_IO_P1,
-        //% block="右" 
-        Right = DAL.MICROBIT_ID_IO_P0
-    }
-
-    //% subcategory="Executive"
+    let _initEvents = true
     export enum MbEvents {
-        //% block="找到" 
+        //% block="Found" 
         FindLine = DAL.MICROBIT_PIN_EVT_FALL,
-        //% block="丢失" 
+        //% block="Lost" 
         LoseLine = DAL.MICROBIT_PIN_EVT_RISE
     }
+    /**
+     * Pins used to generate events
+     */
+    export enum MbPins {
+        //% block="Left" 
+        Left = DAL.MICROBIT_ID_IO_P13,
+        //% block="Right" 
+        Right = DAL.MICROBIT_ID_IO_P14
+    }
 
-    //% block="%side 巡线传感器 %state"
+    export enum TrackingState {
+        //% block="● ●" enumval=0
+        L_R_line,
+
+        //% block="◌ ●" enumval=1
+        L_unline_R_line,
+
+        //% block="● ◌" enumval=2
+        L_line_R_unline,
+
+        //% block="◌ ◌" enumval=3
+        L_R_unline
+    }
+
+    /**
+     * Judging the Current Status of Tracking Module. 
+     * @param state Four states of tracking module
+     */
+    //% blockId=ringbitcar_tracking block="Tracking state is %state"
+    //% weight=50
+    export function tracking(state: TrackingState): boolean {
+        pins.setPull(DigitalPin.P0, PinPullMode.PullNone)  // 修改为 P0
+        pins.setPull(DigitalPin.P1, PinPullMode.PullNone)  // 修改为 P1
+        let left_tracking = pins.digitalReadPin(DigitalPin.P0);  // 修改为 P0
+        let right_tracking = pins.digitalReadPin(DigitalPin.P1);  // 修改为 P1
+        if (left_tracking == 0 && right_tracking == 0 && state == 0) {
+            return true;
+        }
+        else if (left_tracking == 1 && right_tracking == 0 && state == 1) {
+            return true;
+        }
+        else if (left_tracking == 0 && right_tracking == 1 && state == 2) {
+            return true;
+        }
+        else if (left_tracking == 1 && right_tracking == 1 && state == 3) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * TODO: track one side
+     * @param side Line sensor edge 
+     * @param state Line sensor status
+     */
+    //% block="%side line sensor %state"
     //% state.fieldEditor="gridpicker" state.fieldOptions.columns=2
     //% side.fieldEditor="gridpicker" side.fieldOptions.columns=2
     //% weight=45
-    //% group="Microbit car"
-    //% subcategory="Executive"
     export function trackSide(side: MbPins, state: MbEvents): boolean {
-        pins.setPull(DigitalPin.P0, PinPullMode.PullNone)
-        pins.setPull(DigitalPin.P1, PinPullMode.PullNone)
-        let left_tracking = pins.digitalReadPin(DigitalPin.P13);
-        let right_tracking = pins.digitalReadPin(DigitalPin.P14);
+        pins.setPull(DigitalPin.P0, PinPullMode.PullNone)  // 修改为 P0
+        pins.setPull(DigitalPin.P1, PinPullMode.PullNone)  // 修改为 P1
+        let left_tracking = pins.digitalReadPin(DigitalPin.P0);  // 修改为 P0
+        let right_tracking = pins.digitalReadPin(DigitalPin.P1);  // 修改为 P1
         if (side == 113 && state == 2 && left_tracking == 1) {
             return true;
         }
@@ -2429,6 +2474,26 @@ namespace Acebott{
         }
         else {
             return false;
+        }
+    }
+
+    /**
+     * TODO: Runs when line sensor finds or loses.
+     */
+    //% block="On %sensor| line %event"
+    //% sensor.fieldEditor="gridpicker" sensor.fieldOptions.columns=2
+    //% event.fieldEditor="gridpicker" event.fieldOptions.columns=2
+    //% weight=40
+    export function trackEvent(sensor: MbPins, event: MbEvents, handler: Action) {
+        initEvents();
+        control.onEvent(<number>sensor, <number>event, handler);
+    }
+
+    function initEvents(): void {
+        if (_initEvents) {
+            pins.setEvents(DigitalPin.P1, PinEventType.Edge);
+            pins.setEvents(DigitalPin.P0, PinEventType.Edge);
+            _initEvents = false;
         }
     }
 
