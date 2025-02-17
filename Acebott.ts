@@ -2251,7 +2251,7 @@ namespace Acebott{
     export function singleheadlights(light: RGBLights, r: number, g: number, b: number): void {
         let buf = pins.createBuffer(5);
 
-        buf[0] = 0x00;                      //补位
+        buf[0] = 0x00;                  //补位
         buf[1] = r;		                //左轮停止
         buf[2] = g;		                //右轮停止
         buf[3] = b;
@@ -2327,14 +2327,14 @@ namespace Acebott{
         if (rspeed > 0) {
             buf[0] = 0x00;                      //补位
             buf[2] = 0x02;		                //右轮停止
-            buf[4] = rspeed;	                        //速度
+            buf[4] = rspeed;	                //速度
 
         }
         else {
             rspeed = ~rspeed;
             buf[0] = 0x00;                      //补位
             buf[2] = 0x01;		                //右轮停止
-            buf[4] = rspeed;	                        //速度
+            buf[4] = rspeed;	                //速度
           
         }
         pins.i2cWriteBuffer(0x18, buf);     //数据发送
@@ -2375,17 +2375,16 @@ namespace Acebott{
 
             pins.i2cWriteBuffer(0x18, buf);  //数据发送
         }
-        if (dir == 3) {                     //小车右转
-            buf[0] = 0x00;                  //补位
-            buf[1] = 0x02;		            //左轮前进
-            buf[2] = 0x01;		            //右轮后退
-            buf[3] = speed;	                //速度
+        if (dir == 3) {                      //小车右转
+            buf[0] = 0x00;                   //补位
+            buf[1] = 0x02;		             //左轮前进
+            buf[2] = 0x01;		             //右轮后退
+            buf[3] = speed;	                 //速度
             buf[4] = speed;	                 //速度
             
-            pins.i2cWriteBuffer(0x18, buf); //数据发送
+            pins.i2cWriteBuffer(0x18, buf);  //数据发送
         }
     }
-
 
     // trackSide Car  @start
 
