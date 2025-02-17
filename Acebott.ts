@@ -2217,9 +2217,10 @@ namespace Acebott {
     }
     // Speech Recognition @end
 
-    /**
-    * Select the RGBLights on the left or right
-    */
+
+
+
+
     export enum RGBLights {
         //% blockId="Right_RGB" block="Right_RGB"
         RGB_L = 1,
@@ -2229,9 +2230,6 @@ namespace Acebott {
         ALL = 3
     }
 
-    /**
-    * TODO: Set LED headlights.
-    */
     //% block="设置车头RGB灯 %light 颜色为 $color"
     //% color.shadow="colorNumberPicker"
     //% weight=65
@@ -2244,12 +2242,7 @@ namespace Acebott {
         basic.pause(5)
         singleheadlights(light, r, g, b)
     }
-    /**
-    * TODO: Select a headlights and set the RGB color.
-    * @param R R color value of RGB color
-    * @param G G color value of RGB color
-    * @param B B color value of RGB color
-    */
+
     //% inlineInputMode=inline
     //% blockId=RGB block="设置车头RGB灯 %light 颜色为 R:%r G:%g B:%b"
     //% r.min=0 r.max=255
@@ -2270,7 +2263,7 @@ namespace Acebott {
         if (light == 2) { buf[4] = 0x05; pins.i2cWriteBuffer(0x18, buf); basic.pause(5); }
 
         if (light == 3) { buf[4] = 0x06; pins.i2cWriteBuffer(0x18, buf); basic.pause(5); }
-        //数据发送
+        
     }
 
 
@@ -2287,9 +2280,7 @@ namespace Acebott {
         right
     }
 
-    /**
-    * TODO: stopcar
-    */
+
     //% block="Stop car immediately"
     //% subcategory="Executive"
     //% weight=70
@@ -2304,11 +2295,6 @@ namespace Acebott {
         pins.i2cWriteBuffer(0x18, buf);     //数据发送
     }
 
-    /**
-         * TODO: Set the speed of left and right wheels. 
-         * @param lspeed Left wheel speed 
-         * @param rspeed Right wheel speed
-         */
     //% blockId=MotorRun block="左轮速度 %lspeed\\% |右轮速度 %rspeed\\%"
     //% lspeed.min=-100 lspeed.max=100
     //% rspeed.min=-100 rspeed.max=100
@@ -2405,9 +2391,6 @@ namespace Acebott {
 
     // trackSide Car  @start
 
-    /**
-     * Pins used to generate events
-     */
     //% subcategory="Executive"
     export enum MbPins {
         //% block="左" 
