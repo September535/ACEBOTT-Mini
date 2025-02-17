@@ -2224,7 +2224,7 @@ namespace Acebott{
         //% blockId="Right_RGB" block="Right_RGB"
         RGB_L = 1,
         //% blockId="Left_RGB" block="Left_RGB"
-        RGB_R = 0,
+        RGB_R = 2,
         //% blockId="ALL" block="ALL"
         ALL = 3
     }
@@ -2232,7 +2232,7 @@ namespace Acebott{
     /**
     * TODO: Set LED headlights.
     */
-    //% block="Set LED headlights %light color $color"
+    //% block="设置车头RGB灯 %light 颜色为 $color"
     //% color.shadow="colorNumberPicker"
     //% weight=65
     export function colorLight(light: RGBLights, color: number) {
@@ -2240,6 +2240,7 @@ namespace Acebott{
         r = color >> 16
         g = (color >> 8) & 0xFF
         b = color & 0xFF
+        basic.pause(5)
         singleheadlights(light, r, g, b)
     }
     /**
@@ -2249,21 +2250,25 @@ namespace Acebott{
     * @param B B color value of RGB color
     */
     //% inlineInputMode=inline
-    //% blockId=RGB block="Set LED headlights %light color R:%r G:%g B:%b"
+    //% blockId=RGB block="设置车头RGB灯 %light 颜色为 R:%r G:%g B:%b"
     //% r.min=0 r.max=255
     //% g.min=0 g.max=255
     //% b.min=0 b.max=255
     //% weight=60
     export function singleheadlights(light: RGBLights, r: number, g: number, b: number): void {
         let buf = pins.createBuffer(5);
+
         buf[0] = 0x00;                      //补位
         buf[1] = r;		                //左轮停止
         buf[2] = g;		                //右轮停止
         buf[3] = b;
-        buf[4] = 0x04;
 
-        pins.i2cWriteBuffer(0x18, buf);     //数据发送
+        if (light == 1) { buf[4] = 0x04; pins.i2cWriteBuffer(0x18, buf); basic.pause(5); }
 
+        if (light == 2) { buf[4] = 0x05; pins.i2cWriteBuffer(0x18, buf); basic.pause(5); }
+
+        if (light == 3) { buf[4] = 0x06; pins.i2cWriteBuffer(0x18, buf); basic.pause(5); }
+             //数据发送
     }
 
 
@@ -2394,5 +2399,56 @@ namespace Acebott{
     }
 
     // Microbit Car  @end
+
+
+    // trackSide Car  @start
+
+    /**
+     * Pins used to generate events
+     */
+    export enum MbPins {
+        //% block="左" 
+        Left = DAL.MICROBIT_ID_IO_P1,
+        //% block="右" 
+        Right = DAL.MICROBIT_ID_IO_P0
+    }
+    
+    /**
+     * Line Sensor events    MICROBIT_PIN_EVT_RISE
+     */
+    export enum MbEvents {
+        //% block="找到" 
+        FindLine = DAL.MICROBIT_PIN_EVT_FALL,
+        //% block="丢失" 
+        LoseLine = DAL.MICROBIT_PIN_EVT_RISE
+    }
+
+    //% block="%side 巡线传感器 %state"
+    //% state.fieldEditor="gridpicker" state.fieldOptions.columns=2
+    //% side.fieldEditor="gridpicker" side.fieldOptions.columns=2
+    //% weight=45
+    export function trackSide(side: MbPins, state: MbEvents): boolean {
+        pins.setPull(DigitalPin.P0, PinPullMode.PullNone)
+        pins.setPull(DigitalPin.P1, PinPullMode.PullNone)
+        let left_tracking = pins.digitalReadPin(DigitalPin.P13);
+        let right_tracking = pins.digitalReadPin(DigitalPin.P14);
+        if (side == 113 && state == 2 && left_tracking == 1) {
+            return true;
+        }
+        else if (side == 113 && state == 3 && left_tracking == 0) {
+            return true;
+        }
+        else if (side == 114 && state == 2 && right_tracking == 1) {
+            return true;
+        }
+        else if (side == 114 && state == 3 && right_tracking == 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    // trackSide Car  @end
 
 }
