@@ -2235,6 +2235,7 @@ namespace Acebott{
     //% block="设置车头RGB灯 %light 颜色为 $color"
     //% color.shadow="colorNumberPicker"
     //% weight=65
+    //% subcategory="Executive"
     export function colorLight(light: RGBLights, color: number) {
         let r: number, g: number, b: number = 0
         r = color >> 16
@@ -2255,6 +2256,7 @@ namespace Acebott{
     //% g.min=0 g.max=255
     //% b.min=0 b.max=255
     //% weight=60
+    //% subcategory="Executive"
     export function singleheadlights(light: RGBLights, r: number, g: number, b: number): void {
         let buf = pins.createBuffer(5);
 
@@ -2406,6 +2408,7 @@ namespace Acebott{
     /**
      * Pins used to generate events
      */
+    //% subcategory="Executive"
     export enum MbPins {
         //% block="左" 
         Left = DAL.MICROBIT_ID_IO_P1,
@@ -2416,6 +2419,7 @@ namespace Acebott{
     /**
      * Line Sensor events    MICROBIT_PIN_EVT_RISE
      */
+    //% subcategory="Executive"
     export enum MbEvents {
         //% block="找到" 
         FindLine = DAL.MICROBIT_PIN_EVT_FALL,
@@ -2427,6 +2431,7 @@ namespace Acebott{
     //% state.fieldEditor="gridpicker" state.fieldOptions.columns=2
     //% side.fieldEditor="gridpicker" side.fieldOptions.columns=2
     //% weight=45
+    //% subcategory="Executive"
     export function trackSide(side: MbPins, state: MbEvents): boolean {
         pins.setPull(DigitalPin.P0, PinPullMode.PullNone)
         pins.setPull(DigitalPin.P1, PinPullMode.PullNone)
