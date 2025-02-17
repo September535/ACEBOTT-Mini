@@ -2217,9 +2217,6 @@ namespace Acebott{
     }
     // Speech Recognition @end
 
-    /**
-    * Select the RGBLights on the left or right
-    */
     export enum RGBLights {
         //% blockId="Right_RGB" block="Right_RGB"
         RGB_L = 1,
@@ -2229,12 +2226,10 @@ namespace Acebott{
         ALL = 3
     }
 
-    /**
-    * TODO: Set LED headlights.
-    */
     //% block="设置车头RGB灯 %light 颜色为 $color"
     //% color.shadow="colorNumberPicker"
     //% weight=65
+    //% group="Microbit car"
     //% subcategory="Executive"
     export function colorLight(light: RGBLights, color: number) {
         let r: number, g: number, b: number = 0
@@ -2244,18 +2239,14 @@ namespace Acebott{
         basic.pause(5)
         singleheadlights(light, r, g, b)
     }
-    /**
-    * TODO: Select a headlights and set the RGB color.
-    * @param R R color value of RGB color
-    * @param G G color value of RGB color
-    * @param B B color value of RGB color
-    */
+
     //% inlineInputMode=inline
     //% blockId=RGB block="设置车头RGB灯 %light 颜色为 R:%r G:%g B:%b"
     //% r.min=0 r.max=255
     //% g.min=0 g.max=255
     //% b.min=0 b.max=255
     //% weight=60
+    //% group="Microbit car"
     //% subcategory="Executive"
     export function singleheadlights(light: RGBLights, r: number, g: number, b: number): void {
         let buf = pins.createBuffer(5);
@@ -2287,11 +2278,9 @@ namespace Acebott{
         right
     }
 
-    /**
-    * TODO: stopcar
-    */
     //% block="Stop car immediately"
     //% subcategory="Executive"
+    //% group="Microbit car"
     //% weight=70
     export function stopcar(): void {
         let buf = pins.createBuffer(5);
@@ -2304,15 +2293,11 @@ namespace Acebott{
         pins.i2cWriteBuffer(0x18, buf);     //数据发送
     }
 
-    /**
-         * TODO: Set the speed of left and right wheels. 
-         * @param lspeed Left wheel speed 
-         * @param rspeed Right wheel speed
-         */
     //% blockId=MotorRun block="左轮速度 %lspeed\\% |右轮速度 %rspeed\\%"
     //% lspeed.min=-100 lspeed.max=100
     //% rspeed.min=-100 rspeed.max=100
     //% weight=100
+    //% group="Microbit car"
     //% subcategory="Executive"
     export function motors(lspeed: number = 50, rspeed: number = 50): void {
         let buf = pins.createBuffer(5);
@@ -2360,6 +2345,7 @@ namespace Acebott{
     //% subcategory="Executive"
     //% block="Go %dir at speed%speed"
     //% weight=95
+    //% group="Microbit car"
     export function moveTime(dir: Direction, speed: number): void {
         let buf = pins.createBuffer(5);
         if (dir == 0) {                      //小车前进
@@ -2400,14 +2386,9 @@ namespace Acebott{
         }
     }
 
-    // Microbit Car  @end
-
 
     // trackSide Car  @start
 
-    /**
-     * Pins used to generate events
-     */
     //% subcategory="Executive"
     export enum MbPins {
         //% block="左" 
@@ -2415,10 +2396,7 @@ namespace Acebott{
         //% block="右" 
         Right = DAL.MICROBIT_ID_IO_P0
     }
-    
-    /**
-     * Line Sensor events    MICROBIT_PIN_EVT_RISE
-     */
+
     //% subcategory="Executive"
     export enum MbEvents {
         //% block="找到" 
@@ -2431,6 +2409,7 @@ namespace Acebott{
     //% state.fieldEditor="gridpicker" state.fieldOptions.columns=2
     //% side.fieldEditor="gridpicker" side.fieldOptions.columns=2
     //% weight=45
+    //% group="Microbit car"
     //% subcategory="Executive"
     export function trackSide(side: MbPins, state: MbEvents): boolean {
         pins.setPull(DigitalPin.P0, PinPullMode.PullNone)
