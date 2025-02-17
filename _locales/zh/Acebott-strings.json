@@ -60,7 +60,8 @@
   "Acebott.RGB_Colour|block": "RGB循环亮灯",
   "Acebott.moveTime|param|dir": "设定行駛方向",
   "Acebott.moveTime|param|speed": "设定行駛速度",
-
+  "Acebott.singleheadlights|block": "设置车头RGB灯 %light 颜色为 R:%r G:%g B:%b",
+  "Acebott.trackEvent|block": "On %sensor| line %event",
   "{id:category}Acebott": "Acebott",
   "{id:group}130 DC Motor": "130直流电机",
   "{id:group}4-Digit Tube": "4位数码管",
