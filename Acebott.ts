@@ -2406,21 +2406,22 @@ namespace Acebott{
     }
 
     export enum MbPins {
-        //% block="Left" 
+        //% block="左" 
         Left = DAL.MICROBIT_ID_IO_P13,
-        //% block="Right" 
+        //% block="右" 
         Right = DAL.MICROBIT_ID_IO_P14
     }
 
     export enum MbEvents {
-        //% block="Found" 
+        //% block="找到" 
         FindLine = DAL.MICROBIT_PIN_EVT_FALL,
-        //% block="Lost" 
+        //% block="丢失" 
         LoseLine = DAL.MICROBIT_PIN_EVT_RISE
     }
 
-    //% blockId=ringbitcar_tracking block="Tracking state is %state"
+    //% blockId=ringbitcar_tracking block="传感器当前状态 %state"
     //% weight=50
+    //% subcategory="Executive"
     export function tracking(state: TrackingState): boolean {
         pins.setPull(DigitalPin.P0, PinPullMode.PullNone)  // 修改为 P0
         pins.setPull(DigitalPin.P1, PinPullMode.PullNone)  // 修改为 P1
@@ -2444,10 +2445,11 @@ namespace Acebott{
     }
 
 
-    //% block="%side line sensor %state"
+    //% block="%side 巡线传感器 %state"
     //% state.fieldEditor="gridpicker" state.fieldOptions.columns=2
     //% side.fieldEditor="gridpicker" side.fieldOptions.columns=2
     //% weight=45
+    //% subcategory="Executive"
     export function trackSide(side: MbPins, state: MbEvents): boolean {
         pins.setPull(DigitalPin.P0, PinPullMode.PullNone)  // 修改为 P0
         pins.setPull(DigitalPin.P1, PinPullMode.PullNone)  // 修改为 P1
@@ -2468,18 +2470,6 @@ namespace Acebott{
         else {
             return false;
         }
-    }
-
-    /**
-     * TODO: Runs when line sensor finds or loses.
-     */
-    //% block="On %sensor| line %event"
-    //% sensor.fieldEditor="gridpicker" sensor.fieldOptions.columns=2
-    //% event.fieldEditor="gridpicker" event.fieldOptions.columns=2
-    //% weight=40
-    export function trackEvent(sensor: MbPins, event: MbEvents, handler: Action) {
-        initEvents();
-        control.onEvent(<number>sensor, <number>event, handler);
     }
 
     function initEvents(): void {
