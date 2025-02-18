@@ -2218,15 +2218,15 @@ namespace Acebott{
     // Speech Recognition @end
 
     export enum RGBLights {
-        //% blockId="Right_RGB" block="Right_RGB"
+        //% blockId="Right_RGB" block="右"
         RGB_L = 1,
-        //% blockId="Left_RGB" block="Left_RGB"
+        //% blockId="Left_RGB" block="左"
         RGB_R = 2,
-        //% blockId="ALL" block="ALL"
+        //% blockId="ALL" block="全部"
         ALL = 3
     }
 
-    //% block="设置车头RGB灯 %light 颜色为 $color"
+    //% block="设置%light车灯颜色 $color"
     //% color.shadow="colorNumberPicker"
     //% weight=65
     //% group="Microbit car"
@@ -2241,7 +2241,7 @@ namespace Acebott{
     }
 
     //% inlineInputMode=inline
-    //% blockId=RGB block="设置车头RGB灯 %light 颜色为 R:%r G:%g B:%b"
+    //% blockId=RGB block="分别设置%light车灯颜色 R:%r G:%g B:%b"
     //% r.min=0 r.max=255
     //% g.min=0 g.max=255
     //% b.min=0 b.max=255
@@ -2315,39 +2315,34 @@ namespace Acebott{
             buf[0] = 0x00;                      //补位
             buf[1] = 0x02;		                //左轮停止
             buf[3] = lspeed;	                //速度
-
         }
         else {
             lspeed = ~lspeed;
             buf[0] = 0x00;                      //补位
             buf[1] = 0x01;		                //左轮停止
             buf[3] = lspeed;	                //速度
- 
         }
         if (rspeed > 0) {
             buf[0] = 0x00;                      //补位
             buf[2] = 0x02;		                //右轮停止
             buf[4] = rspeed;	                //速度
-
         }
         else {
             rspeed = ~rspeed;
             buf[0] = 0x00;                      //补位
             buf[2] = 0x01;		                //右轮停止
             buf[4] = rspeed;	                //速度
-          
         }
         pins.i2cWriteBuffer(0x18, buf);     //数据发送
-
     }
 
-
-    //% subcategory="Executive"
-    //% block="Go %dir at speed%speed"
-    //% weight=95
+    //% block="设置方向 %dir  |速度 %speed\\%"
+    //% weight=100
+    //% speed.min=0 speed.max=100
     //% group="Microbit car"
     //% subcategory="Executive"
-    export function moveTime(dir: Direction, speed: number): void {
+    export function moveTime(dir: Direction, speed: number = 50): void {
+
         let buf = pins.createBuffer(5);
         if (dir == 0) {                      //小车前进
             buf[0] = 0x00;                   //补位
@@ -2385,98 +2380,41 @@ namespace Acebott{
             
             pins.i2cWriteBuffer(0x18, buf);  //数据发送
         }
+
     }
 
     // trackSide Car  @start
 
     let _initEvents = true
 
-    export enum TrackingState {
-        //% block="● ●" enumval=0
-        L_R_line,
-
-        //% block="◌ ●" enumval=1
-        L_unline_R_line,
-
-        //% block="● ◌" enumval=2
-        L_line_R_unline,
-
-        //% block="◌ ◌" enumval=3
-        L_R_unline
-    }
-
     export enum MbPins {
         //% block="左" 
-        Left = DAL.MICROBIT_ID_IO_P13,
+        Left = DAL.MICROBIT_ID_IO_P1,
         //% block="右" 
-        Right = DAL.MICROBIT_ID_IO_P14
+        Right = DAL.MICROBIT_ID_IO_P0
     }
 
-    export enum MbEvents {
-        //% block="找到" 
-        FindLine = DAL.MICROBIT_PIN_EVT_FALL,
-        //% block="丢失" 
-        LoseLine = DAL.MICROBIT_PIN_EVT_RISE
-    }
-
-    //% blockId=ringbitcar_tracking block="传感器当前状态 %state"
-    //% weight=50
-    //% subcategory="Executive"
-    export function tracking(state: TrackingState): boolean {
-        pins.setPull(DigitalPin.P0, PinPullMode.PullNone)  // 修改为 P0
-        pins.setPull(DigitalPin.P1, PinPullMode.PullNone)  // 修改为 P1
-        let left_tracking = pins.digitalReadPin(DigitalPin.P0);  // 修改为 P0
-        let right_tracking = pins.digitalReadPin(DigitalPin.P1);  // 修改为 P1
-        if (left_tracking == 0 && right_tracking == 0 && state == 0) {
-            return true;
-        }
-        else if (left_tracking == 1 && right_tracking == 0 && state == 1) {
-            return true;
-        }
-        else if (left_tracking == 0 && right_tracking == 1 && state == 2) {
-            return true;
-        }
-        else if (left_tracking == 1 && right_tracking == 1 && state == 3) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
-
-    //% block="%side 巡线传感器 %state"
+    //% blockId=tracking block="tracking at %pin get value"
     //% state.fieldEditor="gridpicker" state.fieldOptions.columns=2
     //% side.fieldEditor="gridpicker" side.fieldOptions.columns=2
     //% weight=45
     //% subcategory="Executive"
-    export function trackSide(side: MbPins, state: MbEvents): boolean {
-        pins.setPull(DigitalPin.P0, PinPullMode.PullNone)  // 修改为 P0
-        pins.setPull(DigitalPin.P1, PinPullMode.PullNone)  // 修改为 P1
-        let left_tracking = pins.digitalReadPin(DigitalPin.P0);  // 修改为 P0
-        let right_tracking = pins.digitalReadPin(DigitalPin.P1);  // 修改为 P1
-        if (side == 113 && state == 2 && left_tracking == 1) {
-            return true;
-        }
-        else if (side == 113 && state == 3 && left_tracking == 0) {
-            return true;
-        }
-        else if (side == 114 && state == 2 && right_tracking == 1) {
-            return true;
-        }
-        else if (side == 114 && state == 3 && right_tracking == 0) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    export function tracking(side: MbPins): number {
+        pins.setPull(AnalogReadWritePin.P0, PinPullMode.PullUp);  // 设置为上拉
+        pins.setPull(AnalogReadWritePin.P1, PinPullMode.PullUp);  // 设置为上拉
+        let left_tracking = pins.analogReadPin(AnalogReadWritePin.P0);  // 读取左传感器
+        let right_tracking = pins.analogReadPin(AnalogReadWritePin.P1);  // 读取右传感器
 
-    function initEvents(): void {
-        if (_initEvents) {
-            pins.setEvents(DigitalPin.P13, PinEventType.Edge);
-            pins.setEvents(DigitalPin.P14, PinEventType.Edge);
-            _initEvents = false;
+        if (side == MbPins.Left) {
+            return left_tracking;
+        }
+
+        else if (side == MbPins.Right) {
+            return right_tracking;
+        }
+        
+        else {
+            return 0;
         }
     }
 
