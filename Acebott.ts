@@ -2233,14 +2233,10 @@ namespace Acebott {
     //% group="Microbit car"
     //% subcategory="Executive"
     export function colorLight(light: RGBLights, color: number) {
-        // 拆分 RGB 颜色
-        let r = (color >> 16) & 0xFF;  // 获取红色分量
-        let g = (color >> 8) & 0xFF;   // 获取绿色分量
-        let b = color & 0xFF;          // 获取蓝色分量
+        let r = (color >> 16) & 0xFF;  
+        let g = (color >> 8) & 0xFF;   
+        let b = color & 0xFF;          
 
-        basic.pause(10);  // 小延时
-
-        // 控制车灯颜色
         singleheadlights(light, r, g, b);
     }
 
