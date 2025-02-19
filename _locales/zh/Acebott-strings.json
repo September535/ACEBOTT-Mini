@@ -56,10 +56,10 @@
   "IR_ButtonAction.Released|block": "松开",
   "Acebott.moveTime|block": "往%dir方向 速度为 %speed",
   "Acebott.stopcar|block": "停止",
-  "Acebott.tracking|block": "循迹模式",
   "Acebott.RGB_Colour|block": "RGB循环亮灯",
   "Acebott.moveTime|param|dir": "设定行駛方向",
   "Acebott.moveTime|param|speed": "设定行駛速度",
+  "Acebott.tracking|block": "|%pin|循迹读取值",
   "Acebott.singleheadlights|block": "设置车头RGB灯 %light 颜色为 R:%r G:%g B:%b",
   "Acebott.trackEvent|block": "On %sensor| line %event",
   "{id:category}Acebott": "Acebott",
@@ -89,4 +89,5 @@
   "{id:subcategory}Display": "显示类",
   "{id:subcategory}Executive": "执行类",
   "{id:subcategory}Sensor": "传感类",
+
 }

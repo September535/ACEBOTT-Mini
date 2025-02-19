@@ -2217,53 +2217,56 @@ namespace Acebott {
     }
     // Speech Recognition @end
 
-
-
-
-
     export enum RGBLights {
-        //% blockId="Right_RGB" block="Right_RGB"
+        //% blockId="Right_RGB" block="右"
         RGB_L = 1,
-        //% blockId="Left_RGB" block="Left_RGB"
+        //% blockId="Left_RGB" block="左"
         RGB_R = 2,
-        //% blockId="ALL" block="ALL"
+        //% blockId="ALL" block="全部"
         ALL = 3
     }
 
-    //% block="设置车头RGB灯 %light 颜色为 $color"
+
+    //% block="设置%light车灯颜色 $color"
     //% color.shadow="colorNumberPicker"
     //% weight=65
+    //% group="Microbit car"
     //% subcategory="Executive"
     export function colorLight(light: RGBLights, color: number) {
-        let r: number, g: number, b: number = 0
-        r = color >> 16
-        g = (color >> 8) & 0xFF
-        b = color & 0xFF
-        basic.pause(5)
-        singleheadlights(light, r, g, b)
+        // 拆分 RGB 颜色
+        let r = (color >> 16) & 0xFF;  // 获取红色分量
+        let g = (color >> 8) & 0xFF;   // 获取绿色分量
+        let b = color & 0xFF;          // 获取蓝色分量
+
+        basic.pause(10);  // 小延时
+
+        // 控制车灯颜色
+        singleheadlights(light, r, g, b);
     }
 
     //% inlineInputMode=inline
-    //% blockId=RGB block="设置车头RGB灯 %light 颜色为 R:%r G:%g B:%b"
+    //% blockId=RGB block="分别设置%light车灯颜色 R:%r G:%g B:%b"
     //% r.min=0 r.max=255
     //% g.min=0 g.max=255
     //% b.min=0 b.max=255
     //% weight=60
+    //% group="Microbit car"
     //% subcategory="Executive"
     export function singleheadlights(light: RGBLights, r: number, g: number, b: number): void {
         let buf = pins.createBuffer(5);
 
-        buf[0] = 0x00;                      //补位
+        buf[0] = 0x00;                  //补位
         buf[1] = r;		                //左轮停止
         buf[2] = g;		                //右轮停止
         buf[3] = b;
 
-        if (light == 1) { buf[4] = 0x04; pins.i2cWriteBuffer(0x18, buf); basic.pause(5); }
+        basic.pause(10);
 
-        if (light == 2) { buf[4] = 0x05; pins.i2cWriteBuffer(0x18, buf); basic.pause(5); }
+        if (light == 1) { buf[4] = 0x04; pins.i2cWriteBuffer(0x18, buf); }
 
-        if (light == 3) { buf[4] = 0x06; pins.i2cWriteBuffer(0x18, buf); basic.pause(5); }
-        
+        if (light == 2) { buf[4] = 0x05; pins.i2cWriteBuffer(0x18, buf); }
+
+        if (light == 3) { buf[4] = 0x06; pins.i2cWriteBuffer(0x18, buf); }
     }
 
 
@@ -2280,9 +2283,9 @@ namespace Acebott {
         right
     }
 
-
     //% block="Stop car immediately"
     //% subcategory="Executive"
+    //% group="Microbit car"
     //% weight=70
     export function stopcar(): void {
         let buf = pins.createBuffer(5);
@@ -2299,6 +2302,7 @@ namespace Acebott {
     //% lspeed.min=-100 lspeed.max=100
     //% rspeed.min=-100 rspeed.max=100
     //% weight=100
+    //% group="Microbit car"
     //% subcategory="Executive"
     export function motors(lspeed: number = 50, rspeed: number = 50): void {
         let buf = pins.createBuffer(5);
@@ -2316,37 +2320,36 @@ namespace Acebott {
             buf[0] = 0x00;                      //补位
             buf[1] = 0x02;		                //左轮停止
             buf[3] = lspeed;	                //速度
-
         }
         else {
             lspeed = ~lspeed;
             buf[0] = 0x00;                      //补位
             buf[1] = 0x01;		                //左轮停止
             buf[3] = lspeed;	                //速度
-
         }
         if (rspeed > 0) {
             buf[0] = 0x00;                      //补位
             buf[2] = 0x02;		                //右轮停止
-            buf[4] = rspeed;	                        //速度
-
+            buf[4] = rspeed;	                //速度
         }
         else {
             rspeed = ~rspeed;
             buf[0] = 0x00;                      //补位
             buf[2] = 0x01;		                //右轮停止
+
             buf[4] = rspeed;	                        //速度
-
         }
+        basic.pause(1);
         pins.i2cWriteBuffer(0x18, buf);     //数据发送
-
     }
 
-
+    //% block="设置方向 %dir  |速度 %speed\\%"
+    //% weight=100
+    //% speed.min=0 speed.max=100
+    //% group="Microbit car"
     //% subcategory="Executive"
-    //% block="Go %dir at speed%speed"
-    //% weight=95
-    export function moveTime(dir: Direction, speed: number): void {
+    export function moveTime(dir: Direction, speed: number = 50): void {
+
         let buf = pins.createBuffer(5);
         if (dir == 0) {                      //小车前进
             buf[0] = 0x00;                   //补位
@@ -2375,22 +2378,20 @@ namespace Acebott {
 
             pins.i2cWriteBuffer(0x18, buf);  //数据发送
         }
-        if (dir == 3) {                     //小车右转
-            buf[0] = 0x00;                  //补位
-            buf[1] = 0x02;		            //左轮前进
-            buf[2] = 0x01;		            //右轮后退
-            buf[3] = speed;	                //速度
-            buf[4] = speed;	                 //速度
-
-            pins.i2cWriteBuffer(0x18, buf); //数据发送
+        if (dir == 3) {                      //小车右转
+            buf[0] = 0x00;                   //补位
+            buf[1] = 0x02;		             //左轮前进
+            buf[2] = 0x01;		             //右轮后退
+            buf[3] = speed;	                 //速度
+            buf[4] = speed;	                 //速度       
+ 
+            pins.i2cWriteBuffer(0x18, buf);  //数据发送
         }
     }
 
-    // Microbit Car  @end
+    // trackSide Car  @start 
 
-
-    // trackSide Car  @start
-
+    let _initEvents = true
     //% subcategory="Executive"
     export enum MbPins {
         //% block="左" 
@@ -2399,41 +2400,28 @@ namespace Acebott {
         Right = DAL.MICROBIT_ID_IO_P0
     }
 
-    /**
-     * Line Sensor events    MICROBIT_PIN_EVT_RISE
-     */
-    //% subcategory="Executive"
-    export enum MbEvents {
-        //% block="找到" 
-        FindLine = DAL.MICROBIT_PIN_EVT_FALL,
-        //% block="丢失" 
-        LoseLine = DAL.MICROBIT_PIN_EVT_RISE
-    }
 
-    //% block="%side 巡线传感器 %state"
+    //% blockId=tracking block="tracking at %pin get value"
     //% state.fieldEditor="gridpicker" state.fieldOptions.columns=2
     //% side.fieldEditor="gridpicker" side.fieldOptions.columns=2
     //% weight=45
     //% subcategory="Executive"
-    export function trackSide(side: MbPins, state: MbEvents): boolean {
-        pins.setPull(DigitalPin.P0, PinPullMode.PullNone)
-        pins.setPull(DigitalPin.P1, PinPullMode.PullNone)
-        let left_tracking = pins.digitalReadPin(DigitalPin.P13);
-        let right_tracking = pins.digitalReadPin(DigitalPin.P14);
-        if (side == 113 && state == 2 && left_tracking == 1) {
-            return true;
+    export function tracking(side: MbPins): number {
+        pins.setPull(AnalogReadWritePin.P0, PinPullMode.PullUp);  // 设置为上拉
+        pins.setPull(AnalogReadWritePin.P1, PinPullMode.PullUp);  // 设置为上拉
+        let left_tracking = pins.analogReadPin(AnalogReadWritePin.P0);  // 读取左传感器
+        let right_tracking = pins.analogReadPin(AnalogReadWritePin.P1);  // 读取右传感器
+
+        if (side == MbPins.Left) {
+            return left_tracking;
         }
-        else if (side == 113 && state == 3 && left_tracking == 0) {
-            return true;
+
+        else if (side == MbPins.Right) {
+            return right_tracking;
         }
-        else if (side == 114 && state == 2 && right_tracking == 1) {
-            return true;
-        }
-        else if (side == 114 && state == 3 && right_tracking == 0) {
-            return true;
-        }
+        
         else {
-            return false;
+            return 0;
         }
     }
 
