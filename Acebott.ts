@@ -2232,12 +2232,15 @@ namespace Acebott{
     //% group="Microbit car"
     //% subcategory="Executive"
     export function colorLight(light: RGBLights, color: number) {
-        let r: number, g: number, b: number = 0
-        r = color >> 16
-        g = (color >> 8) & 0xFF
-        b = color & 0xFF
-        basic.pause(5)
-        singleheadlights(light, r, g, b)
+        // 拆分 RGB 颜色
+        let r = (color >> 16) & 0xFF;  // 获取红色分量
+        let g = (color >> 8) & 0xFF;   // 获取绿色分量
+        let b = color & 0xFF;          // 获取蓝色分量
+
+        basic.pause(10);  // 小延时
+
+        // 控制车灯颜色
+        singleheadlights(light, r, g, b);
     }
 
     //% inlineInputMode=inline
@@ -2256,11 +2259,13 @@ namespace Acebott{
         buf[2] = g;		                //右轮停止
         buf[3] = b;
 
-        if (light == 1) { buf[4] = 0x04; pins.i2cWriteBuffer(0x18, buf); basic.pause(5); }
+        basic.pause(10);
 
-        if (light == 2) { buf[4] = 0x05; pins.i2cWriteBuffer(0x18, buf); basic.pause(5); }
+        if (light == 1) { buf[4] = 0x04; pins.i2cWriteBuffer(0x18, buf); }
 
-        if (light == 3) { buf[4] = 0x06; pins.i2cWriteBuffer(0x18, buf); basic.pause(5); }
+        if (light == 2) { buf[4] = 0x05; pins.i2cWriteBuffer(0x18, buf); }
+
+        if (light == 3) { buf[4] = 0x06; pins.i2cWriteBuffer(0x18, buf); }
              //数据发送
     }
 
@@ -2333,6 +2338,7 @@ namespace Acebott{
             buf[2] = 0x01;		                //右轮停止
             buf[4] = rspeed;	                //速度
         }
+        basic.pause(1);
         pins.i2cWriteBuffer(0x18, buf);     //数据发送
     }
 
