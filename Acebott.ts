@@ -2279,7 +2279,7 @@ namespace Acebott{
         right
     }
 
-    //% block="Stop car immediately"
+    //% block="停止"
     //% subcategory="Executive"
     //% group="Microbit car"
     //% weight=70
@@ -2398,7 +2398,7 @@ namespace Acebott{
     }
 
     
-    //% blockId=tracking block="tracking at %pin get value"
+    //% blockId=tracking block="%pin 循迹取值"
     //% state.fieldEditor="gridpicker" state.fieldOptions.columns=2
     //% side.fieldEditor="gridpicker" side.fieldOptions.columns=2
     //% weight=45
