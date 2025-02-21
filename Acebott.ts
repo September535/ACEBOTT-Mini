@@ -2238,7 +2238,6 @@ namespace Acebott{
         r = color >> 16
         g = (color >> 8) & 0xFF
         b = color & 0xFF
-        basic.pause(5)
         singleheadlights(light, r, g, b)
     }
 
@@ -2286,11 +2285,12 @@ namespace Acebott{
     export function stopcar(): void {
         let buf = pins.createBuffer(5);
         buf[0] = 0x00;                      //补位
-        buf[1] = 0x00;		                //左轮停止
-        buf[2] = 0x00;		                //右轮停止
+        buf[1] = 0x01;		                //左轮
+        buf[2] = 0x00;
         buf[3] = 0;	                        //速度	
-        buf[4] = 0;	                        //速度	
+        pins.i2cWriteBuffer(0x18, buf);     //数据发送
 
+        buf[1] = 0x02;		                //右轮停止
         pins.i2cWriteBuffer(0x18, buf);     //数据发送
     }
 
@@ -2301,7 +2301,7 @@ namespace Acebott{
     //% group="Microbit car"
     //% subcategory="Executive"
     export function motors(lspeed: number = 50, rspeed: number = 50): void {
-        let buf = pins.createBuffer(5);
+        let buf = pins.createBuffer(4);
         if (lspeed > 100) {
             lspeed = 100;
         } else if (lspeed < -100) {
@@ -2314,27 +2314,35 @@ namespace Acebott{
         }
         if (lspeed > 0) {
             buf[0] = 0x00;                      
-            buf[1] = 0x02;		                
-            buf[3] = lspeed;	              
+            buf[1] = 0x01;   //左轮
+            buf[2] = 0x02;   //向前
+            buf[3] = lspeed;	  
+            pins.i2cWriteBuffer(0x18, buf);
         }
         else {
             lspeed = ~lspeed;
             buf[0] = 0x00;                     
-            buf[1] = 0x01;		                
-            buf[3] = lspeed;	              
+            buf[1] = 0x01;   //左轮
+            buf[2] = 0x01;   //向后
+            buf[3] = lspeed;	 
+            pins.i2cWriteBuffer(0x18, buf);
         }
         if (rspeed > 0) {
             buf[0] = 0x00;                      
-            buf[2] = 0x02;		               
-            buf[4] = rspeed;	               
+            buf[1] = 0x02;   //右轮
+            buf[2] = 0x02;   //向前
+            buf[3] = rspeed;	 
+            pins.i2cWriteBuffer(0x18, buf);
         }
         else {
             rspeed = ~rspeed;
             buf[0] = 0x00;                      
-            buf[2] = 0x01;		                
-            buf[4] = rspeed;	               
+            buf[1] = 0x02;   //右轮
+            buf[2] = 0x01;   //向前
+            buf[3] = rspeed;	    
+            pins.i2cWriteBuffer(0x18, buf);
         }
-        pins.i2cWriteBuffer(0x18, buf);    
+          
     }
 
     
@@ -2348,39 +2356,46 @@ namespace Acebott{
         let buf = pins.createBuffer(5);
         if (dir == 0) {                      
             buf[0] = 0x00;                  
-            buf[1] = 0x02;		             
-            buf[2] = 0x02;		            
+            buf[1] = 0x01;
+            buf[2] = 0x02;
             buf[3] = speed;	                 
-            buf[4] = speed;	            
+            pins.i2cWriteBuffer(0x18, buf);
 
-            pins.i2cWriteBuffer(0x18, buf);  
+            buf[1] = 0x02;
+            pins.i2cWriteBuffer(0x18, buf);
         }
         if (dir == 1) {                  
             buf[0] = 0x00;                  
-            buf[1] = 0x01;		           
-            buf[2] = 0x01;		          
+            buf[1] = 0x01;
+            buf[2] = 0x01;
             buf[3] = speed;	               
-            buf[4] = speed;	                
+            pins.i2cWriteBuffer(0x18, buf);
 
-            pins.i2cWriteBuffer(0x18, buf);  
+            buf[1] = 0x02;
+            pins.i2cWriteBuffer(0x18, buf);
         }
         if (dir == 2) {                    
             buf[0] = 0x00;                 
-            buf[1] = 0x01;		           
-            buf[2] = 0x02;		             
+            buf[1] = 0x01;	
+            buf[2] = 0x01;
             buf[3] = speed;	             
-            buf[4] = speed;	               
+            pins.i2cWriteBuffer(0x18, buf);
 
-            pins.i2cWriteBuffer(0x18, buf); 
+            buf[1] = 0x02;
+            buf[2] = 0x02;
+            pins.i2cWriteBuffer(0x18, buf);
         }
         if (dir == 3) {                   
             buf[0] = 0x00;                
-            buf[1] = 0x02;		         
-            buf[2] = 0x01;		          
-            buf[3] = speed;	            
-            buf[4] = speed;	            
-            
-            pins.i2cWriteBuffer(0x18, buf);  
+            buf[1] = 0x01;	
+            buf[2] = 0x02;
+            buf[3] = speed;	                        
+            pins.i2cWriteBuffer(0x18, buf);
+
+            buf[1] = 0x02;
+            buf[2] = 0x01;
+            pins.i2cWriteBuffer(0x18, buf);
+
         }
 
     }
