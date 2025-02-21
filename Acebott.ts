@@ -2220,11 +2220,11 @@ namespace Acebott{
 
     export enum RGBLights {
         //% blockId="Right_RGB" block="右"
-        RGB_L = 1,
+         RGB_R = 1,
         //% blockId="Left_RGB" block="左"
-        RGB_R = 2,
+         RGB_L = 2,
         //% blockId="ALL" block="全部"
-        ALL = 3
+         ALL = 3
     }
 
     
@@ -2254,14 +2254,15 @@ namespace Acebott{
         let buf = pins.createBuffer(5);
         
         buf[0] = 0x00;                  
-        buf[1] = r;		                
-        buf[2] = g;		                
-        buf[3] = b;
-        if (light == 1) { buf[4] = 0x04; pins.i2cWriteBuffer(0x18, buf); basic.pause(5); }
+        buf[2] = r;		                
+        buf[3] = g;		                
+        buf[4] = b;
 
-        if (light == 2) { buf[4] = 0x05; pins.i2cWriteBuffer(0x18, buf); basic.pause(5); }
+        if (light == 1) { buf[1] = 0x03; pins.i2cWriteBuffer(0x18, buf); basic.pause(10) }
 
-        if (light == 3) { buf[4] = 0x06; pins.i2cWriteBuffer(0x18, buf); basic.pause(5); }             
+        else if (light == 2) { buf[1] = 0x04; pins.i2cWriteBuffer(0x18, buf); basic.pause(10) }
+
+         else if (light == 3) { buf[1] = 0x05; pins.i2cWriteBuffer(0x18, buf);  }               
     }
 
     
