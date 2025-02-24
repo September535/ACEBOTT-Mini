@@ -68,6 +68,8 @@
   "Acebott.RGBLights.ALL|block": "全部",
   "Acebott.RGBLights.RGB_L|block": "左",
   "Acebott.RGBLights.RGB_R|block": "右",
+  "Acebott.MbPins.Left|block": "左",
+  "Acebott.MbPins.Right|block": "右",
   "Acebott.RGB_color|block":  "设置 %light 颜色 $color,
   "Acebott.RGB |block":  "设置车头RGB灯 %light 颜色为 R:%r G:%g B:%b",
   "Acebott.Wheel_speed_setting |block":"设置方向 %dir  |速度 %speed\\%"
