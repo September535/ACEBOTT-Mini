@@ -2407,9 +2407,9 @@ namespace Acebott{
     let _initEvents = true
 
     export enum MbPins {
-        //% block="左" 
+        //% block="Left" 
         Left = DAL.MICROBIT_ID_IO_P1,
-        //% block="右" 
+        //% block="Right" 
         Right = DAL.MICROBIT_ID_IO_P0
     }
 
