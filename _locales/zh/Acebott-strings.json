@@ -55,7 +55,6 @@
   "IR_ButtonAction.Pressed|block": "按下",
   "IR_ButtonAction.Released|block": "松开",
   "Acebott.moveTime|block": "往%dir方向 速度为 %speed",
-  "Acebott.stopcar|block": "停止",
   "Acebott.RGB_Colour|block": "RGB循环亮灯",
   "Acebott.moveTime|param|dir": "设定行駛方向",
   "Acebott.moveTime|param|speed": "设定行駛速度",
