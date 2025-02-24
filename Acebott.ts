@@ -2414,7 +2414,7 @@ namespace Acebott{
     }
 
     
-    //% blockId=tracking block="%pin 循迹取值"
+    //% blockId=tracking block="%pin tracking value"
     //% state.fieldEditor="gridpicker" state.fieldOptions.columns=2
     //% side.fieldEditor="gridpicker" side.fieldOptions.columns=2
     //% weight=45
