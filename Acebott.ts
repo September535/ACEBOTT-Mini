@@ -2219,11 +2219,11 @@ namespace Acebott{
     // Speech Recognition @end
 
     export enum RGBLights {
-        //% blockId="Right_RGB" block="右"
+        //% blockId="Right_RGB" block="Right"
          RGB_R = 1,
-        //% blockId="Left_RGB" block="左"
+        //% blockId="Left_RGB" block="Left"
          RGB_L = 2,
-        //% blockId="ALL" block="全部"
+        //% blockId="ALL" block="ALL"
          ALL = 3
     }
 
@@ -2269,13 +2269,13 @@ namespace Acebott{
     // Microbit Car  @start
 
     export enum Direction {
-        //% block="前进" enumval=0
+        //% block="Forward" enumval=0
         forward,
-        //% block="后退" enumval=1
+        //% block="Backward" enumval=1
         backward,
-        //% block="左转" enumval=2
+        //% block="Left" enumval=2
         left,
-        //% block="右转" enumval=3
+        //% block="Right" enumval=3
         right
     }
 
