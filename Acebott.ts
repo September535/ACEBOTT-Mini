@@ -2228,7 +2228,7 @@ namespace Acebott{
     }
 
     
-    //% block="Set LED headlights %light color $color"
+    //% blockId=RGB_color block="Set LED headlights %light color $color"
     //% color.shadow="colorNumberPicker"
     //% weight=65
     //% group="Microbit car"
