@@ -61,6 +61,7 @@
   "Acebott.tracking|block": "|%pin|循迹读取值",
   "Acebott.MotorRun|block": "设置左轮 %lspeed\\% |设置右轮 %rspeed\\%",
   "Acebott.car_stop |block":  "停止,
+  "Acebott.RGB_color|block":  "设置 %light 颜色 $color,
   "Acebott.RGB |block":  "设置车头RGB灯 %light 颜色为 R:%r G:%g B:%b",
   "Acebott.Wheel_speed_setting |block":"设置方向 %dir  |速度 %speed\\%"
   "{id:category}Acebott": "Acebott",
