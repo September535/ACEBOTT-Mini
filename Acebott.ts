@@ -2228,7 +2228,7 @@ namespace Acebott{
     }
 
     
-    //% block="设置%light车灯颜色 $color"
+    //% block="Set LED headlights %light color $color"
     //% color.shadow="colorNumberPicker"
     //% weight=65
     //% group="Microbit car"
@@ -2279,7 +2279,7 @@ namespace Acebott{
         right
     }
 
-    //% block="停止"
+    //% blockId=car_stop block="Stop"
     //% subcategory="Executive"
     //% group="Microbit car"
     //% weight=70
@@ -2295,7 +2295,7 @@ namespace Acebott{
         pins.i2cWriteBuffer(0x18, buf);     //数据发送
     }
 
-    //% blockId=MotorRun block="左轮速度 %lspeed\\% |右轮速度 %rspeed\\%"
+    //% blockId=MotorRun block="Left wheel speed %lspeed\\% |Right wheel speed %rspeed\\%"
     //% lspeed.min=-100 lspeed.max=100
     //% rspeed.min=-100 rspeed.max=100
     //% weight=100
@@ -2347,7 +2347,7 @@ namespace Acebott{
     }
 
     
-    //% block="设置方向 %dir  |速度 %speed\\%"
+    //% blockId=Wheel_speed_setting block="Set direction %dir  |speed %speed\\%"
     //% weight=100
     //% speed.min=0 speed.max=100
     //% group="Microbit car"
