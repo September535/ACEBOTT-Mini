@@ -2243,7 +2243,7 @@ namespace Acebott{
 
     
     //% inlineInputMode=inline
-    //% blockId=RGB block="分别设置%light车灯颜色 R:%r G:%g B:%b"
+    //% blockId=RGB block="Set the %light color R:%r G:%g B:%b"
     //% r.min=0 r.max=255
     //% g.min=0 g.max=255
     //% b.min=0 b.max=255
