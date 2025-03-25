@@ -84,7 +84,7 @@
   "Acebott.Rocker_X_read|block": "读取摇杆X",
   "Acebott.Rocker_Key_read|block": "读取摇杆按键",
   "Acebott.Four_bit_key|block": "读取 %dir 按键",
-  "Acebott.Vibration_motor_control|block": "震动电机 %condition ", 
+  "Acebott.Vibrating_machine|block": "震动电机 %condition ", 
 
   "{id:category}Acebott": "Acebott",
   "{id:group}130 DC Motor": "130直流电机",
