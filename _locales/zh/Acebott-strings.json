@@ -56,13 +56,16 @@
   "IR_ButtonAction.Released|block": "松开",
   "Acebott.moveTime|block": "往%dir方向 速度为 %speed",
   "Acebott.car_stop |block":  "停止",
+  
   "Acebott.Direction.backward|block": "后退",
   "Acebott.Direction.forward|block": "前进",
   "Acebott.Direction.left|block": "左",
   "Acebott.Direction.right|block": "右",
+
   "Acebott.RGBLights.ALL|block": "全部",
   "Acebott.RGBLights.RGB_L|block": "左",
   "Acebott.RGBLights.RGB_R|block": "右",
+
   "Acebott.MbPins.Left|block": "左",
   "Acebott.MbPins.Right|block": "右",
   "Acebott.RGB |block":"设置车头RGB灯 %light 颜色为 R:%r G:%g B:%b",
@@ -71,11 +74,18 @@
   "Acebott.moveTime|param|speed": "设定行駛速度",
   "Acebott.tracking|block": "|%pin|循迹读取值",
 
+  "Acebott.Four_key.up|block": "上",
+  "Acebott.Four_key.down|block": "下",
+  "Acebott.Four_key.left|block": "左",
+  "Acebott.Four_key.right|block": "右",
+  "Acebott.Vibration_motor_condition.on|block": "开",
+  "Acebott.Vibration_motor_condition.off|block": "关",
   "Acebott.Rocker_Y_read|block": "读取摇杆Y",
   "Acebott.Rocker_X_read|block": "读取摇杆X",
   "Acebott.Rocker_Key_read|block": "读取摇杆按键",
   "Acebott.Four_bit_key|block": "读取 %dir 按键",
-  
+  "Acebott.Vibration_motor_control|block": "震动电机 %condition ", 
+
   "{id:category}Acebott": "Acebott",
   "{id:group}130 DC Motor": "130直流电机",
   "{id:group}4-Digit Tube": "4位数码管",
