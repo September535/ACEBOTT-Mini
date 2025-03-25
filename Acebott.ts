@@ -2454,9 +2454,6 @@ namespace Acebott{
         //% block="Key" enumval=2
         key,
     }
-
-    // 定义读取摇杆值的函数
-    //% blockId=joystick block="Read the %dir rocker value"
     //% group="Microbit controller"
     //% subcategory="Executive"
     export function joystick(dir: Rocker): number | boolean {
@@ -2519,6 +2516,7 @@ namespace Acebott{
 
     // 控制震动电机
     //% blockId=Vibrating_machine block="Vibrating machine %condition"
+
     //% group="Microbit controller"
     //% subcategory="Executive"
     export function Vibrating_machine(condition: Vibration_motor_condition): void {
