@@ -2454,6 +2454,8 @@ namespace Acebott{
         //% block="Key" enumval=2
         key,
     }
+
+    //% blockId=joystick block="Read joystick value %dir "
     //% group="Microbit controller"
     //% subcategory="Executive"
     export function joystick(dir: Rocker): number | boolean {
