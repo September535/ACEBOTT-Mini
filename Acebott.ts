@@ -2455,8 +2455,8 @@ namespace Acebott{
         key,
     }
 
-    // 定义读取摇杆值的函数
-    //% blockId=joystick block="Read the %dir rocker value"
+
+    //% blockId=joystick block="Read joystick value %dir "
     //% group="Microbit controller"
     //% subcategory="Executive"
     export function joystick(dir: Rocker): number | boolean {

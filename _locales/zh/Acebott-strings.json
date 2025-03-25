@@ -72,7 +72,6 @@
 
   "Acebott.MbPins.Left|block": "左",
   "Acebott.MbPins.Right|block": "右",
-  "Acebott.joystick|block": "读取 %dir 摇杆值",
   "Acebott.singleheadlights|block": "设置%light灯光颜色 R:%r G:%g B:%b",
   "Acebott.motors|block": "左轮速度 %lspeed\\% |右路速度 %rspeed\\%",
   "Acebott.colorLight|block":"设置LED %light 灯颜色 $color",
@@ -89,6 +88,7 @@
   "Acebott.Vibration_motor_condition.off|block": "关",
   
   "Acebott.Four_bit_key|block": "读取 %dir 按键",
+  "Acebott.joystick|block": "读取摇杆值 %dir ",
   "Acebott.Vibrating_machine|block": "震动电机 %condition",
 
   "{id:category}Acebott": "Acebott",
