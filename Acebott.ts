@@ -2439,14 +2439,14 @@ namespace Acebott{
 
    // trackSide controller  @start
     
-    //% blockId = Rocker_X_read"
+    //% blockId = Rocker_X_read block = "读取摇杆X"
     //% group="Microbit controller"
     //% subcategory="Executive"
     export function Rocker_X_read() {
         return pins.analogReadPin(AnalogReadWritePin.P1)
     }
-
-    //% blockId = Rocker_Y_read"
+   
+    //% blockId = Rocker_Y_read block = "读取摇杆Y"
     //% group="Microbit controller"
     //% subcategory="Executive"
     export function Rocker_Y_read() {
