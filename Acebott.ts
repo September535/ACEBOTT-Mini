@@ -2436,5 +2436,27 @@ namespace Acebott{
         }
     }
     // trackSide Car  @end
+
+    // trackSide controller  @start
+
+    //% blockId = Rocker_X_read"
+    //% group="Microbit controller"
+    //% subcategory="Executive"
+    export function Rocker_X_read() {
+
+        return pins.analogReadPin(AnalogReadWritePin.P1)
+
+    }
+
+    //% blockId = Rocker_Y_read"
+    //% group="Microbit controller"
+    //% subcategory="Executive"
+    export function Rocker_Y_read() {
+
+        return pins.analogReadPin(AnalogReadWritePin.P2)
+
+    }
+
+
 }
 
