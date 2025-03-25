@@ -2455,6 +2455,7 @@ namespace Acebott{
         key,
     }
 
+
     //% blockId=joystick block="Read joystick value %dir "
     //% group="Microbit controller"
     //% subcategory="Executive"
@@ -2518,7 +2519,6 @@ namespace Acebott{
 
     // 控制震动电机
     //% blockId=Vibrating_machine block="Vibrating machine %condition"
-
     //% group="Microbit controller"
     //% subcategory="Executive"
     export function Vibrating_machine(condition: Vibration_motor_condition): void {
