@@ -2498,24 +2498,24 @@ namespace Acebott{
     }
 
 
-export enum Vibration_motor_condition {
-    //% block="ON" enumval=0
-    on,
-    //% block="OFF" enumval=1
-    off,
-}
-
-// 定义控制震动电机的函数
-//% blockId=Vibration_motor_control block="震动电机 %condition"
-//% group="Microbit controller"
-//% subcategory="Executive"
-export function Vibrating_machine(condition: Vibration_motor_condition): void {
-    if (condition === Vibration_motor_condition.on) {
-        pins.digitalWritePin(DigitalPin.P12, 1); // 打开震动电机
-    } else if (condition === Vibration_motor_condition.off) {
-        pins.digitalWritePin(DigitalPin.P12, 0); // 关闭震动电机
+    export enum Vibration_motor_condition {
+        //% block="ON" enumval=0
+        on,
+        //% block="OFF" enumval=1
+        off,
     }
-}
-    // Microbit controller  @end
+
+    // 定义控制震动电机的函数
+    //% blockId = Vibration_motor_control block="震动电机 %condition"
+    //% group="Microbit controller"
+    //% subcategory="Executive"
+    export function Vibrating_machine(condition: Vibration_motor_condition): void {
+        if (condition === Vibration_motor_condition.on) {
+            pins.digitalWritePin(DigitalPin.P12, 1); // 打开震动电机
+        } else if (condition === Vibration_motor_condition.off) {
+            pins.digitalWritePin(DigitalPin.P12, 0); // 关闭震动电机
+        }
+    }
+        // Microbit controller  @end
 
 }
