@@ -2439,26 +2439,30 @@ namespace Acebott{
 
     // Microbit controller  @start
 
-    //% blockId=Rocker_X_read block="读取摇杆X"
-    //% group="Microbit controller"
-    //% subcategory="Executive"
-    export function Rocker_X_read(): number {
-        return pins.analogReadPin(AnalogPin.P1);
+    export enum Rocker {
+        //% block="X"
+        x,
+        //% block="Y" 
+        y,
+        //% block="Key" 
+        key,
     }
 
-    //% blockId=Rocker_Y_read block="读取摇杆Y"
+    //% blockId=joystick block="读取摇杆 %dir 值"
     //% group="Microbit controller"
     //% subcategory="Executive"
-    export function Rocker_Y_read(): number {
-        return pins.analogReadPin(AnalogPin.P2);
-    }
-
-    //% blockId=Rocker_Key_read block="读取摇杆按键"
-    //% group="Microbit controller"
-    //% subcategory="Executive"
-    export function Rocker_Key_read(): number {
-        pins.setPull(DigitalPin.P8, PinPullMode.PullUp)
-        return pins.digitalReadPin(DigitalPin.P8);
+    export function joystick(dir: Rocker): number | boolean {
+        switch (dir) {
+            case Rocker.x:
+                return pins.analogReadPin(AnalogPin.P1); // 读取摇杆 X 值
+            case Rocker.y:
+                return pins.analogReadPin(AnalogPin.P2); // 读取摇杆 Y 值
+            case Rocker.key:
+                pins.setPull(DigitalPin.P8, PinPullMode.PullUp); // 设置按键引脚为上拉模式
+                return pins.digitalReadPin(DigitalPin.P8) === 0; // 读取按键状态，返回布尔值
+            default:
+                return false; // 如果传入无效的方向，返回 false
+        }
     }
 
     export enum Four_key {
