@@ -64,7 +64,7 @@
   "Acebott.Rocker_X_read|block": "Read the joystick X",
   "Acebott.Rocker_Key_read|block": "Read the joystick keys",
   "Acebott.Four_bit_key|block": "Read the %dir keys",
-  "Acebott.Vibration_motor_control|block": "Vibrating machine %condition ", 
+  "Acebott.Vibrating_machine|block": "Vibrating machine %condition ", 
   
   "Acebott|block": "Acebott",
   "AnalogReadPin.P0|block": "P0",
