@@ -2227,23 +2227,22 @@ namespace Acebott{
          ALL = 3
     }
 
-    
-    //% blockId=RGB_color block="Set LED headlights %light color $color"
+    //% blockId=colorLight block="Set LED %light color $color"
     //% color.shadow="colorNumberPicker"
     //% weight=65
     //% group="Microbit car"
     //% subcategory="Executive"
-    export function colorLight(light: RGBLights, color: number) {
-        let r: number, g: number, b: number = 0
-        r = color >> 16
-        g = (color >> 8) & 0xFF
-        b = color & 0xFF
-        singleheadlights(light, r, g, b)
+    export function colorLight(light: RGBLights, color: number): void {
+        let r: number, g: number, b: number;
+        r = (color >> 16) & 0xFF; // 提取红色分量
+        g = (color >> 8) & 0xFF;  // 提取绿色分量
+        b = color & 0xFF;         // 提取蓝色分量
+        singleheadlights(light, r, g, b); // 调用底层函数设置灯光颜色
     }
 
     
     //% inlineInputMode=inline
-    //% blockId=RGB block="Set the %light color R:%r G:%g B:%b"
+    //% blockId=singleheadlights block="Set %light lamp color R:%r G:%g B:%b"
     //% r.min=0 r.max=255
     //% g.min=0 g.max=255
     //% b.min=0 b.max=255
@@ -2252,19 +2251,27 @@ namespace Acebott{
     //% subcategory="Executive"
     export function singleheadlights(light: RGBLights, r: number, g: number, b: number): void {
         let buf = pins.createBuffer(5);
-        
-        buf[0] = 0x00;                  
-        buf[2] = r;		                
-        buf[3] = g;		                
+
+        buf[0] = 0x00;
+        buf[2] = r;
+        buf[3] = g;
         buf[4] = b;
 
-        if (light == 1) { buf[1] = 0x03; pins.i2cWriteBuffer(0x18, buf); basic.pause(10) }
-
-        else if (light == 2) { buf[1] = 0x04; pins.i2cWriteBuffer(0x18, buf); basic.pause(10) }
-
-         else if (light == 3) { buf[1] = 0x05; pins.i2cWriteBuffer(0x18, buf);  }               
+        if (light == 1) {
+            buf[1] = 0x03;
+            pins.i2cWriteBuffer(0x18, buf);
+            basic.pause(10);
+        }
+        else if (light == 2) {
+            buf[1] = 0x04;
+            pins.i2cWriteBuffer(0x18, buf);
+            basic.pause(10);
+        }
+        else if (light == 3) {
+            buf[1] = 0x05;
+            pins.i2cWriteBuffer(0x18, buf);
+        }
     }
-
     
     // Microbit Car  @start
 
@@ -2279,7 +2286,7 @@ namespace Acebott{
         right
     }
 
-    //% blockId=car_stop block="Stop"
+    //% blockId=stopcar block="Stop"
     //% subcategory="Executive"
     //% group="Microbit car"
     //% weight=70
@@ -2295,7 +2302,7 @@ namespace Acebott{
         pins.i2cWriteBuffer(0x18, buf);     //数据发送
     }
 
-    //% blockId=MotorRun block="Left wheel speed %lspeed\\% |Right wheel speed %rspeed\\%"
+    //% blockId=motors block="Left wheel speed %lspeed\\% | right speed %rspeed\\%"
     //% lspeed.min=-100 lspeed.max=100
     //% rspeed.min=-100 rspeed.max=100
     //% weight=100
@@ -2347,7 +2354,7 @@ namespace Acebott{
     }
 
     
-    //% blockId=Wheel_speed_setting block="Set direction %dir  |speed %speed\\%"
+    //% blockId=c block="Set direction %dir | speed %speed"
     //% weight=100
     //% speed.min=0 speed.max=100
     //% group="Microbit car"
@@ -2440,15 +2447,13 @@ namespace Acebott{
     // Microbit controller  @start
 
     export enum Rocker {
-        //% block="X"
+        //% block="X" enumval=0
         x,
-        //% block="Y" 
+        //% block="Y" enumval=1
         y,
-        //% block="Key" 
+        //% block="Key" enumval=2
         key,
     }
-
-    //% blockId=joystick block="读取摇杆 %dir 值"
     //% group="Microbit controller"
     //% subcategory="Executive"
     export function joystick(dir: Rocker): number | boolean {
@@ -2476,7 +2481,7 @@ namespace Acebott{
         right
     }
 
-    //% blockId=Four_bit_key block="读取 Four_key %dir 按键"
+    //% blockId=Four_bit_key block="Read the %dir key"
     //% group="Microbit controller"
     //% subcategory="Executive"
     export function Four_bit_key(dir: Four_key): boolean {
@@ -2510,7 +2515,8 @@ namespace Acebott{
     }
 
     // 控制震动电机
-    //% blockId=Vibrating_machine block="震动电机 %condition"
+    //% blockId=Vibrating_machine block="Vibrating machine %condition"
+
     //% group="Microbit controller"
     //% subcategory="Executive"
     export function Vibrating_machine(condition: Vibration_motor_condition): void {
