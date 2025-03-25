@@ -70,6 +70,12 @@
   "Acebott.moveTime|param|dir": "设定行駛方向",
   "Acebott.moveTime|param|speed": "设定行駛速度",
   "Acebott.tracking|block": "|%pin|循迹读取值",
+
+  "Acebott.Rocker_Y_read|block": "读取摇杆Y",
+  "Acebott.Rocker_X_read|block": "读取摇杆X",
+  "Acebott.Rocker_Key_read|block": "读取摇杆按键",
+  "Acebott.Four_bit_key|block": "读取 %dir 按键",
+  
   "{id:category}Acebott": "Acebott",
   "{id:group}130 DC Motor": "130直流电机",
   "{id:group}4-Digit Tube": "4位数码管",
