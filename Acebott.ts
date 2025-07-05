@@ -2230,7 +2230,7 @@ namespace Acebott{
     //% blockId=colorLight block="Set LED %light color $color"
     //% color.shadow="colorNumberPicker"
     //% weight=65
-    //% group="Microbit car"
+    //% group="Microbit Car"
     //% subcategory="Executive"
     export function colorLight(light: RGBLights, color: number): void {
         let r: number, g: number, b: number;
@@ -2247,7 +2247,7 @@ namespace Acebott{
     //% g.min=0 g.max=255
     //% b.min=0 b.max=255
     //% weight=60
-    //% group="Microbit car"
+    //% group="Microbit Car"
     //% subcategory="Executive"
     export function singleheadlights(light: RGBLights, r: number, g: number, b: number): void {
         let buf = pins.createBuffer(5);
@@ -2288,7 +2288,7 @@ namespace Acebott{
 
     //% blockId=stopcar block="Stop"
     //% subcategory="Executive"
-    //% group="Microbit car"
+    //% group="Microbit Car"
     //% weight=70
     export function stopcar(): void {
         let buf = pins.createBuffer(5);
@@ -2306,7 +2306,7 @@ namespace Acebott{
     //% lspeed.min=-100 lspeed.max=100
     //% rspeed.min=-100 rspeed.max=100
     //% weight=100
-    //% group="Microbit car"
+    //% group="Microbit Car"
     //% subcategory="Executive"
     export function motors(lspeed: number = 50, rspeed: number = 50): void {
         let buf = pins.createBuffer(4);
@@ -2357,7 +2357,7 @@ namespace Acebott{
     //% blockId=c block="Set direction %dir | speed %speed"
     //% weight=100
     //% speed.min=0 speed.max=100
-    //% group="Microbit car"
+    //% group="Microbit Car"
     //% subcategory="Executive"
     export function moveTime(dir: Direction, speed: number = 50): void {
 
@@ -2444,90 +2444,258 @@ namespace Acebott{
     }
     // Microbit Car  @end
 
-    // Microbit controller  @start
+    // Microbit K210  @start
 
-    export enum Rocker {
-        //% block="X" enumval=0
-        x,
-        //% block="Y" enumval=1
-        y,
-        //% block="Key" enumval=2
-        key,
+    // 全局变量
+    let set_mode = 0
+    let x = 0      // X坐标
+    let y = 0      // Y坐标
+    let w = 0      // 宽度
+    let h = 0      // 高度
+    let cx = 0     // 中心点X坐标
+    let cy = 0     // 中心点Y坐标
+    let angle = 0  // 视觉巡线角度
+    let tag = ""   // 识别内容
+    let color_index = 0
+    let red_value = 0
+    let green_value = 0
+    let blue_value = 0
+
+    export enum RecognitionMode {
+        //% block="QR码"
+        QRCode = 2,
+        //% block="条形码"
+        Barcode = 3,
+        //% block="人脸"
+        Face = 4,
+        //% block="图像"
+        Image = 5,
+        //% block="数字"
+        Number = 6,
+        //% block="交通标志-卡片"
+        TrafficCard = 7,
+        //% block="交通标志-标识牌" 
+        TrafficSign = 10,
+        //% block="视觉巡线"
+        VisualPatrol = 8,
+        //% block="机器学习"
+        MachineLearning = 9
     }
 
+    export enum ColorSelection {
+        //% block="全部"
+        All = 0,
+        //% block="红色"
+        Red = 1,
+        //% block="绿色"
+        Green = 2,
+        //% block="蓝色"
+        Blue = 3
+    }
 
-    //% blockId=joystick block="Read joystick value %dir "
-    //% group="Microbit controller"
+    export enum CodeData {
+        //% block="X坐标"
+        X,
+        //% block="Y坐标"
+        Y,
+        //% block="宽度"
+        W,
+        //% block="高度"
+        H,
+        //% block="中心X"
+        CenterX,
+        //% block="中心Y"
+        CenterY,
+        //% block="角度"
+        Angle,
+        //% block="内容"
+        Tag,
+    }
+
+    //% blockId=K210_Init block="K210初始化"
     //% subcategory="Executive"
-    export function joystick(dir: Rocker): number | boolean {
-        switch (dir) {
-            case Rocker.x:
-                return pins.analogReadPin(AnalogPin.P1); // 读取摇杆 X 值
-            case Rocker.y:
-                return pins.analogReadPin(AnalogPin.P2); // 读取摇杆 Y 值
-            case Rocker.key:
-                pins.setPull(DigitalPin.P8, PinPullMode.PullUp); // 设置按键引脚为上拉模式
-                return pins.digitalReadPin(DigitalPin.P8) === 0; // 读取按键状态，返回布尔值
-            default:
-                return false; // 如果传入无效的方向，返回 false
+    //% group="Microbit K210"
+    //% weight=100
+    export function K210_Init(): void {
+        serial.redirect(
+            SerialPin.P14,
+            SerialPin.P15,
+            BaudRate.BaudRate115200
+        )
+        set_mode = 0
+    }
+
+    //% blockId=K210_Menu block="K210主界面"
+    //% subcategory="Executive"
+    //% group="Microbit K210"
+    //% weight=100
+    export function K210_Menu(): void {
+        if (set_mode != 0) {
+            let data_send = pins.createBuffer(3)
+            data_send.setNumber(NumberFormat.UInt8LE, 0, 0)
+            data_send.setNumber(NumberFormat.UInt8LE, 1, 13)
+            data_send.setNumber(NumberFormat.UInt8LE, 2, 10)
+            serial.writeBuffer(data_send)
+            basic.pause(100)
+            set_mode = 0
         }
     }
 
-    export enum Four_key {
-        //% block="Up" enumval=0
-        up,
-        //% block="Down" enumval=1
-        down,
-        //% block="Left" enumval=2
-        left,
-        //% block="Right" enumval=3
-        right
+    //% blockId=K210_RGB_lights block="Set RGB color R:%r G:%g B:%b"
+    //% r.min=0 r.max=255
+    //% g.min=0 g.max=255
+    //% b.min=0 b.max=255
+    //% weight=60
+    //% subcategory="Executive"
+    //% group="Microbit K210"
+    export function K210_RGB_lights(r: number, g: number, b: number): void {
+        if (red_value != r || green_value != g || blue_value != b) {
+            let data_send = pins.createBuffer(7)
+            data_send.setNumber(NumberFormat.UInt8LE, 0, set_mode)
+            data_send.setNumber(NumberFormat.UInt8LE, 1, 255)
+            data_send.setNumber(NumberFormat.UInt8LE, 2, r)
+            data_send.setNumber(NumberFormat.UInt8LE, 3, g)
+            data_send.setNumber(NumberFormat.UInt8LE, 4, b)
+            data_send.setNumber(NumberFormat.UInt8LE, 5, 13)
+            data_send.setNumber(NumberFormat.UInt8LE, 6, 10)
+            serial.writeBuffer(data_send)
+            basic.pause(100)
+        }
+        red_value = r
+        green_value = g
+        blue_value = b
     }
 
-    //% blockId=Four_bit_key block="Read the %dir key"
-    //% group="Microbit controller"
+    //% blockId=recognize_color block="识别颜色 %color"
     //% subcategory="Executive"
-    export function Four_bit_key(dir: Four_key): boolean {
-        // 设置引脚的上拉电阻
-        pins.setPull(DigitalPin.P13, PinPullMode.PullUp)
-        pins.setPull(DigitalPin.P14, PinPullMode.PullUp)
-        pins.setPull(DigitalPin.P15, PinPullMode.PullUp)
-        pins.setPull(DigitalPin.P16, PinPullMode.PullUp)
+    //% group="Microbit K210" 
+    //% weight=95
+    export function recognizeColor(color: ColorSelection): boolean {
+        if (set_mode != 1 || color_index != color) {
 
-        // 根据方向读取对应的按键状态
-        switch (dir) {
-            case Four_key.up:
-                return pins.digitalReadPin(DigitalPin.P16) === 0;
-            case Four_key.down:
-                return pins.digitalReadPin(DigitalPin.P14) === 0;
-            case Four_key.left:
-                return pins.digitalReadPin(DigitalPin.P13) === 0;
-            case Four_key.right:
-                return pins.digitalReadPin(DigitalPin.P15) === 0;
-            default:
-                return false; // 如果传入无效的方向，返回 false
+            let data_send = pins.createBuffer(8)
+            data_send.setNumber(NumberFormat.UInt8LE, 0, 1)
+            data_send.setNumber(NumberFormat.UInt8LE, 1, color)
+            data_send.setNumber(NumberFormat.UInt8LE, 2, 600 >> 8)
+            data_send.setNumber(NumberFormat.UInt8LE, 3, 600 & 0xFF)
+            data_send.setNumber(NumberFormat.UInt8LE, 4, 100 >> 8)
+            data_send.setNumber(NumberFormat.UInt8LE, 5, 100 & 0xFF)
+            data_send.setNumber(NumberFormat.UInt8LE, 6, 13)
+            data_send.setNumber(NumberFormat.UInt8LE, 7, 10)
+            serial.writeBuffer(data_send)
+            basic.pause(100)
+            set_mode = 1
+            color_index = color
+        }
+
+        let available = serial.readBuffer(0)
+        if (available && available.length > 0) {
+            let data_len = available.getNumber(NumberFormat.UInt8LE, 0)
+            if (available.length >= data_len + 1) {
+                x = available.getNumber(NumberFormat.UInt16LE, 1)
+                y = available.getNumber(NumberFormat.UInt8LE, 3)
+                w = available.getNumber(NumberFormat.UInt16LE, 4)
+                h = available.getNumber(NumberFormat.UInt8LE, 6)
+                cx = available.getNumber(NumberFormat.UInt16LE, 7)
+                cy = available.getNumber(NumberFormat.UInt8LE, 9)
+                tag = ""
+                for (let i = 10; i < data_len + 1; i++) {
+                    tag += String.fromCharCode(available.getNumber(NumberFormat.UInt8LE, i))
+                }
+                return true
+            }
+        }
+        return false
+    }
+    //% blockId=recognize_code block="识别 %mode"
+    //% subcategory="Executive"
+    //% group="Microbit K210"
+    //% weight=90
+    export function recognizeCode(mode: RecognitionMode): boolean {
+        // 检查是否需要切换模式
+        if (set_mode != mode) {
+            // 交通标志特殊处理
+            if (mode == RecognitionMode.TrafficCard || mode == RecognitionMode.TrafficSign) {
+                let data_send = pins.createBuffer(4)
+                data_send.setNumber(NumberFormat.UInt8LE, 0, 7)  // 固定包头7
+                // 卡片=1, 标识牌=2
+                data_send.setNumber(NumberFormat.UInt8LE, 1, mode == RecognitionMode.TrafficCard ? 1 : 2)
+                data_send.setNumber(NumberFormat.UInt8LE, 2, 13)
+                data_send.setNumber(NumberFormat.UInt8LE, 3, 10)
+                serial.writeBuffer(data_send)
+                set_mode = mode  // 注意这里设置为实际模式值(7或10)
+            }
+            // 其他模式
+            else {
+                let data_send = pins.createBuffer(3)
+                data_send.setNumber(NumberFormat.UInt8LE, 0, mode)
+                data_send.setNumber(NumberFormat.UInt8LE, 1, 13)
+                data_send.setNumber(NumberFormat.UInt8LE, 2, 10)
+                serial.writeBuffer(data_send)
+                set_mode = mode
+            }
+            basic.pause(100)
+        }
+
+        // 数据处理
+        let available = serial.readBuffer(0)
+        if (available && available.length > 0) {
+            let data_len = available.getNumber(NumberFormat.UInt8LE, 0)
+            if (available.length >= data_len + 1) {
+                switch (mode) {
+                    case RecognitionMode.VisualPatrol:
+                        angle = available.getNumber(NumberFormat.UInt8LE, 1) - 60
+                        return true
+
+                    case RecognitionMode.MachineLearning:
+                        tag = available.getNumber(NumberFormat.UInt8LE, 1).toString()
+                        return true
+
+                    default:
+                        x = available.getNumber(NumberFormat.UInt16LE, 1)
+                        y = available.getNumber(NumberFormat.UInt8LE, 3)
+                        w = available.getNumber(NumberFormat.UInt16LE, 4)
+                        h = available.getNumber(NumberFormat.UInt8LE, 6)
+
+                        // 人脸和交通标志有中心点坐标
+                        if (mode == RecognitionMode.Face ||
+                            mode == RecognitionMode.TrafficCard ||
+                            mode == RecognitionMode.TrafficSign) {
+                            cx = available.getNumber(NumberFormat.UInt16LE, 7)
+                            cy = available.getNumber(NumberFormat.UInt8LE, 9)
+                        }
+
+                        // 读取标签内容
+                        tag = ""
+                        let startIdx = (mode == RecognitionMode.Face ||
+                            mode == RecognitionMode.TrafficCard ||
+                            mode == RecognitionMode.TrafficSign) ? 10 : 7
+                        for (let i = startIdx; i < data_len + 1; i++) {
+                            tag += String.fromCharCode(available.getNumber(NumberFormat.UInt8LE, i))
+                        }
+                        return true
+                }
+            }
+        }
+        return false
+    }
+    //% blockId=get_code_data block="获取 %data"
+    //% subcategory="Executive"
+    //% group="Microbit K210"
+    //% weight=85
+    export function getCodeData(data: CodeData): string {
+        switch (data) {
+            case CodeData.X: return x.toString()
+            case CodeData.Y: return y.toString()
+            case CodeData.W: return w.toString()
+            case CodeData.H: return h.toString()
+            case CodeData.CenterX: return cx.toString()
+            case CodeData.CenterY: return cy.toString()
+            case CodeData.Angle: return angle.toString()
+            case CodeData.Tag: return tag
+            default: return "0"
         }
     }
 
-
-    export enum Vibration_motor_condition {
-        //% block="ON" enumval=0
-        on,
-        //% block="OFF" enumval=1
-        off,
-    }
-
-    // 控制震动电机
-    //% blockId=Vibrating_machine block="Vibrating machine %condition"
-    //% group="Microbit controller"
-    //% subcategory="Executive"
-    export function Vibrating_machine(condition: Vibration_motor_condition): void {
-        if (condition === Vibration_motor_condition.on) {
-            pins.digitalWritePin(DigitalPin.P12, 1); // 打开震动电机
-        } else {
-            pins.digitalWritePin(DigitalPin.P12, 0); // 关闭震动电机
-        }
-    }
-        // Microbit controller  @end
-
+// Microbit K210  @end
 }
