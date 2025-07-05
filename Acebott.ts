@@ -2454,25 +2454,35 @@ namespace Acebott{
     let h = 0      // 高度
     let cx = 0     // 中心点X坐标
     let cy = 0     // 中心点Y坐标
+    let angle = 0  // 视觉巡线角度
     let tag = ""   // 识别内容
+    let color_index = 0
+    let red_value = 0
+    let green_value = 0
+    let blue_value = 0
 
-    //% block="识别模式"
     export enum RecognitionMode {
         //% block="QR码"
-        QRCode,
+        QRCode = 2,
         //% block="条形码"
-        Barcode,
+        Barcode = 3,
         //% block="人脸"
-        Face,
+        Face = 4,
         //% block="图像"
-        Image,
+        Image = 5,
         //% block="数字"
-        Number
+        Number = 6,
+        //% block="交通标志-卡片"
+        TrafficCard = 7,
+        //% block="交通标志-标识牌" 
+        TrafficSign = 10,
+        //% block="视觉巡线"
+        VisualPatrol = 8,
+        //% block="机器学习"
+        MachineLearning = 9
     }
 
-    //% block="颜色选择"
     export enum ColorSelection {
-
         //% block="全部"
         All = 0,
         //% block="红色"
@@ -2483,7 +2493,6 @@ namespace Acebott{
         Blue = 3
     }
 
-    //% block="数据类型"
     export enum CodeData {
         //% block="X坐标"
         X,
@@ -2497,6 +2506,8 @@ namespace Acebott{
         CenterX,
         //% block="中心Y"
         CenterY,
+        //% block="角度"
+        Angle,
         //% block="内容"
         Tag,
     }
@@ -2504,29 +2515,77 @@ namespace Acebott{
     //% blockId=K210_Init block="K210初始化"
     //% subcategory="Executive"
     //% group="Microbit K210"
-    //% weight=70
+    //% weight=100
     export function K210_Init(): void {
         serial.redirect(
             SerialPin.P14,
             SerialPin.P15,
             BaudRate.BaudRate115200
         )
+        set_mode = 0
+    }
+
+    //% blockId=K210_Menu block="K210主界面"
+    //% subcategory="Executive"
+    //% group="Microbit K210"
+    //% weight=100
+    export function K210_Menu(): void {
+        if (set_mode != 0) {
+            let data_send = pins.createBuffer(3)
+            data_send.setNumber(NumberFormat.UInt8LE, 0, 0)
+            data_send.setNumber(NumberFormat.UInt8LE, 1, 13)
+            data_send.setNumber(NumberFormat.UInt8LE, 2, 10)
+            serial.writeBuffer(data_send)
+            basic.pause(100)
+            set_mode = 0
+        }
+    }
+
+    //% blockId=K210_RGB_lights block="Set RGB color R:%r G:%g B:%b"
+    //% r.min=0 r.max=255
+    //% g.min=0 g.max=255
+    //% b.min=0 b.max=255
+    //% weight=60
+    //% subcategory="Executive"
+    //% group="Microbit K210"
+    export function K210_RGB_lights(r: number, g: number, b: number): void {
+        if (red_value != r || green_value != g || blue_value != b) {
+            let data_send = pins.createBuffer(7)
+            data_send.setNumber(NumberFormat.UInt8LE, 0, set_mode)
+            data_send.setNumber(NumberFormat.UInt8LE, 1, 255)
+            data_send.setNumber(NumberFormat.UInt8LE, 2, r)
+            data_send.setNumber(NumberFormat.UInt8LE, 3, g)
+            data_send.setNumber(NumberFormat.UInt8LE, 4, b)
+            data_send.setNumber(NumberFormat.UInt8LE, 5, 13)
+            data_send.setNumber(NumberFormat.UInt8LE, 6, 10)
+            serial.writeBuffer(data_send)
+            basic.pause(100)
+        }
+        red_value = r
+        green_value = g
+        blue_value = b
     }
 
     //% blockId=recognize_color block="识别颜色 %color"
     //% subcategory="Executive"
-    //% group="Microbit K210"
-    //% weight=65
+    //% group="Microbit K210" 
+    //% weight=95
     export function recognizeColor(color: ColorSelection): boolean {
-        if (set_mode != 1) {
-            let data_send = pins.createBuffer(4)
-            data_send.setNumber(NumberFormat.UInt8LE, 0, 1) // 颜色识别模式
-            data_send.setNumber(NumberFormat.UInt8LE, 1, color) // 颜色索引
-            data_send.setNumber(NumberFormat.UInt8LE, 2, 13) // 指令结束符1
-            data_send.setNumber(NumberFormat.UInt8LE, 3, 10) // 指令结束符2
+        if (set_mode != 1 || color_index != color) {
+
+            let data_send = pins.createBuffer(8)
+            data_send.setNumber(NumberFormat.UInt8LE, 0, 1)
+            data_send.setNumber(NumberFormat.UInt8LE, 1, color)
+            data_send.setNumber(NumberFormat.UInt8LE, 2, 600 >> 8)
+            data_send.setNumber(NumberFormat.UInt8LE, 3, 600 & 0xFF)
+            data_send.setNumber(NumberFormat.UInt8LE, 4, 100 >> 8)
+            data_send.setNumber(NumberFormat.UInt8LE, 5, 100 & 0xFF)
+            data_send.setNumber(NumberFormat.UInt8LE, 6, 13)
+            data_send.setNumber(NumberFormat.UInt8LE, 7, 10)
             serial.writeBuffer(data_send)
             basic.pause(100)
             set_mode = 1
+            color_index = color
         }
 
         let available = serial.readBuffer(0)
@@ -2548,61 +2607,82 @@ namespace Acebott{
         }
         return false
     }
-
     //% blockId=recognize_code block="识别 %mode"
     //% subcategory="Executive"
     //% group="Microbit K210"
-    //% weight=60
+    //% weight=90
     export function recognizeCode(mode: RecognitionMode): boolean {
-        // 设置模式代码
-        let target_mode = 0
-        switch (mode) {
-            case RecognitionMode.QRCode: target_mode = 2; break
-            case RecognitionMode.Barcode: target_mode = 3; break
-            case RecognitionMode.Face: target_mode = 4; break
-            case RecognitionMode.Image: target_mode = 5; break
-            case RecognitionMode.Number: target_mode = 6; break
-        }
-
-        if (set_mode != target_mode) {
-            let data_send = pins.createBuffer(3)
-            data_send.setNumber(NumberFormat.UInt8LE, 0, target_mode)
-            data_send.setNumber(NumberFormat.UInt8LE, 1, 13)
-            data_send.setNumber(NumberFormat.UInt8LE, 2, 10)
-            serial.writeBuffer(data_send)
+        // 检查是否需要切换模式
+        if (set_mode != mode) {
+            // 交通标志特殊处理
+            if (mode == RecognitionMode.TrafficCard || mode == RecognitionMode.TrafficSign) {
+                let data_send = pins.createBuffer(4)
+                data_send.setNumber(NumberFormat.UInt8LE, 0, 7)  // 固定包头7
+                // 卡片=1, 标识牌=2
+                data_send.setNumber(NumberFormat.UInt8LE, 1, mode == RecognitionMode.TrafficCard ? 1 : 2)
+                data_send.setNumber(NumberFormat.UInt8LE, 2, 13)
+                data_send.setNumber(NumberFormat.UInt8LE, 3, 10)
+                serial.writeBuffer(data_send)
+                set_mode = mode  // 注意这里设置为实际模式值(7或10)
+            }
+            // 其他模式
+            else {
+                let data_send = pins.createBuffer(3)
+                data_send.setNumber(NumberFormat.UInt8LE, 0, mode)
+                data_send.setNumber(NumberFormat.UInt8LE, 1, 13)
+                data_send.setNumber(NumberFormat.UInt8LE, 2, 10)
+                serial.writeBuffer(data_send)
+                set_mode = mode
+            }
             basic.pause(100)
-            set_mode = target_mode
         }
 
+        // 数据处理
         let available = serial.readBuffer(0)
         if (available && available.length > 0) {
             let data_len = available.getNumber(NumberFormat.UInt8LE, 0)
             if (available.length >= data_len + 1) {
-                x = available.getNumber(NumberFormat.UInt16LE, 1)
-                y = available.getNumber(NumberFormat.UInt8LE, 3)
-                w = available.getNumber(NumberFormat.UInt16LE, 4)
-                h = available.getNumber(NumberFormat.UInt8LE, 6)
+                switch (mode) {
+                    case RecognitionMode.VisualPatrol:
+                        angle = available.getNumber(NumberFormat.UInt8LE, 1) - 60
+                        return true
 
-                if (mode == RecognitionMode.Face) {
-                    cx = available.getNumber(NumberFormat.UInt16LE, 7)
-                    cy = available.getNumber(NumberFormat.UInt8LE, 9)
-                }
+                    case RecognitionMode.MachineLearning:
+                        tag = available.getNumber(NumberFormat.UInt8LE, 1).toString()
+                        return true
 
-                tag = ""
-                let startIdx = mode == RecognitionMode.Face ? 10 : 7
-                for (let i = startIdx; i < data_len + 1; i++) {
-                    tag += String.fromCharCode(available.getNumber(NumberFormat.UInt8LE, i))
+                    default:
+                        x = available.getNumber(NumberFormat.UInt16LE, 1)
+                        y = available.getNumber(NumberFormat.UInt8LE, 3)
+                        w = available.getNumber(NumberFormat.UInt16LE, 4)
+                        h = available.getNumber(NumberFormat.UInt8LE, 6)
+
+                        // 人脸和交通标志有中心点坐标
+                        if (mode == RecognitionMode.Face ||
+                            mode == RecognitionMode.TrafficCard ||
+                            mode == RecognitionMode.TrafficSign) {
+                            cx = available.getNumber(NumberFormat.UInt16LE, 7)
+                            cy = available.getNumber(NumberFormat.UInt8LE, 9)
+                        }
+
+                        // 读取标签内容
+                        tag = ""
+                        let startIdx = (mode == RecognitionMode.Face ||
+                            mode == RecognitionMode.TrafficCard ||
+                            mode == RecognitionMode.TrafficSign) ? 10 : 7
+                        for (let i = startIdx; i < data_len + 1; i++) {
+                            tag += String.fromCharCode(available.getNumber(NumberFormat.UInt8LE, i))
+                        }
+                        return true
                 }
-                return true
             }
         }
         return false
     }
-
     //% blockId=get_code_data block="获取 %data"
     //% subcategory="Executive"
     //% group="Microbit K210"
-    //% weight=50
+    //% weight=85
     export function getCodeData(data: CodeData): string {
         switch (data) {
             case CodeData.X: return x.toString()
@@ -2611,11 +2691,11 @@ namespace Acebott{
             case CodeData.H: return h.toString()
             case CodeData.CenterX: return cx.toString()
             case CodeData.CenterY: return cy.toString()
+            case CodeData.Angle: return angle.toString()
             case CodeData.Tag: return tag
             default: return "0"
         }
     }
 
 // Microbit K210  @end
-
 }
