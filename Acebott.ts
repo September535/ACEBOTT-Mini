@@ -2230,7 +2230,7 @@ namespace Acebott{
     //% blockId=colorLight block="Set LED %light color $color"
     //% color.shadow="colorNumberPicker"
     //% weight=65
-    //% group="Microbit car"
+    //% group="Microbit Car"
     //% subcategory="Executive"
     export function colorLight(light: RGBLights, color: number): void {
         let r: number, g: number, b: number;
@@ -2247,7 +2247,7 @@ namespace Acebott{
     //% g.min=0 g.max=255
     //% b.min=0 b.max=255
     //% weight=60
-    //% group="Microbit car"
+    //% group="Microbit Car"
     //% subcategory="Executive"
     export function singleheadlights(light: RGBLights, r: number, g: number, b: number): void {
         let buf = pins.createBuffer(5);
@@ -2288,7 +2288,7 @@ namespace Acebott{
 
     //% blockId=stopcar block="Stop"
     //% subcategory="Executive"
-    //% group="Microbit car"
+    //% group="Microbit Car"
     //% weight=70
     export function stopcar(): void {
         let buf = pins.createBuffer(5);
@@ -2306,7 +2306,7 @@ namespace Acebott{
     //% lspeed.min=-100 lspeed.max=100
     //% rspeed.min=-100 rspeed.max=100
     //% weight=100
-    //% group="Microbit car"
+    //% group="Microbit Car"
     //% subcategory="Executive"
     export function motors(lspeed: number = 50, rspeed: number = 50): void {
         let buf = pins.createBuffer(4);
@@ -2357,7 +2357,7 @@ namespace Acebott{
     //% blockId=c block="Set direction %dir | speed %speed"
     //% weight=100
     //% speed.min=0 speed.max=100
-    //% group="Microbit car"
+    //% group="Microbit Car"
     //% subcategory="Executive"
     export function moveTime(dir: Direction, speed: number = 50): void {
 
@@ -2444,90 +2444,125 @@ namespace Acebott{
     }
     // Microbit Car  @end
 
-    // Microbit controller  @start
+    // Microbit K210  @start
 
-    export enum Rocker {
-        //% block="X" enumval=0
-        x,
-        //% block="Y" enumval=1
-        y,
-        //% block="Key" enumval=2
-        key,
+    // 全局变量
+    let set_mode = 0
+    let x = 0  // QR 的 X 坐标
+    let y = 0  // QR 的 Y 坐标
+    let w = 0  // QR 的宽度
+    let h = 0  // QR 的高度
+    let tag = ""  // QR 的内容
+
+    //% block="QR Data"
+    export enum QRData {
+        //% block="x coordinate"
+        X,
+        //% block="y coordinate"
+        Y,
+        //% block="width"
+        W,
+        //% block="height"
+        H,
+        //% block="text"
+        Tag
     }
 
-
-    //% blockId=joystick block="Read joystick value %dir "
-    //% group="Microbit controller"
+    //% blockId=Get_QR_Data block="Get QR |%data"
     //% subcategory="Executive"
-    export function joystick(dir: Rocker): number | boolean {
-        switch (dir) {
-            case Rocker.x:
-                return pins.analogReadPin(AnalogPin.P1); // 读取摇杆 X 值
-            case Rocker.y:
-                return pins.analogReadPin(AnalogPin.P2); // 读取摇杆 Y 值
-            case Rocker.key:
-                pins.setPull(DigitalPin.P8, PinPullMode.PullUp); // 设置按键引脚为上拉模式
-                return pins.digitalReadPin(DigitalPin.P8) === 0; // 读取按键状态，返回布尔值
-            default:
-                return false; // 如果传入无效的方向，返回 false
+    //% group="Microbit K210"
+    //% weight=50
+    export function getQRData(data: QRData): number | string {
+        switch (data) {
+            case QRData.X: return x;
+            case QRData.Y: return y;
+            case QRData.W: return w;
+            case QRData.H: return h;
+            case QRData.Tag: return tag;
+            default: return 0;
         }
     }
 
-    export enum Four_key {
-        //% block="Up" enumval=0
-        up,
-        //% block="Down" enumval=1
-        down,
-        //% block="Left" enumval=2
-        left,
-        //% block="Right" enumval=3
-        right
-    }
-
-    //% blockId=Four_bit_key block="Read the %dir key"
-    //% group="Microbit controller"
+    //% blockId=K210_Init block="K210_Init"
     //% subcategory="Executive"
-    export function Four_bit_key(dir: Four_key): boolean {
-        // 设置引脚的上拉电阻
-        pins.setPull(DigitalPin.P13, PinPullMode.PullUp)
-        pins.setPull(DigitalPin.P14, PinPullMode.PullUp)
-        pins.setPull(DigitalPin.P15, PinPullMode.PullUp)
-        pins.setPull(DigitalPin.P16, PinPullMode.PullUp)
-
-        // 根据方向读取对应的按键状态
-        switch (dir) {
-            case Four_key.up:
-                return pins.digitalReadPin(DigitalPin.P16) === 0;
-            case Four_key.down:
-                return pins.digitalReadPin(DigitalPin.P14) === 0;
-            case Four_key.left:
-                return pins.digitalReadPin(DigitalPin.P13) === 0;
-            case Four_key.right:
-                return pins.digitalReadPin(DigitalPin.P15) === 0;
-            default:
-                return false; // 如果传入无效的方向，返回 false
-        }
+    //% group="Microbit K210"
+    //% weight=70
+    export function K210_Init(): void {
+        serial.redirect(
+            SerialPin.P14,
+            SerialPin.P15,
+            BaudRate.BaudRate115200
+        )
     }
 
-
-    export enum Vibration_motor_condition {
-        //% block="ON" enumval=0
-        on,
-        //% block="OFF" enumval=1
-        off,
-    }
-
-    // 控制震动电机
-    //% blockId=Vibrating_machine block="Vibrating machine %condition"
-    //% group="Microbit controller"
+    //% blockId=QRCode_Recognize block="QRCode Recognize"
     //% subcategory="Executive"
-    export function Vibrating_machine(condition: Vibration_motor_condition): void {
-        if (condition === Vibration_motor_condition.on) {
-            pins.digitalWritePin(DigitalPin.P12, 1); // 打开震动电机
-        } else {
-            pins.digitalWritePin(DigitalPin.P12, 0); // 关闭震动电机
+    //% group="Microbit K210"
+    //% weight=60
+    export function qrcode_recognize(): boolean {
+        if (set_mode != 2) {
+            let data_send = pins.createBuffer(3)
+            data_send.setNumber(NumberFormat.UInt8LE, 0, 2)
+            data_send.setNumber(NumberFormat.UInt8LE, 1, 13)
+            data_send.setNumber(NumberFormat.UInt8LE, 2, 10)
+            serial.writeBuffer(data_send)
+            basic.pause(100)
+            set_mode = 2
         }
+
+        let available = serial.readBuffer(0)
+        if (available && available.length > 0) {
+            let data_len = available.getNumber(NumberFormat.UInt8LE, 0)
+            if (available.length >= data_len + 1) {
+                x = available.getNumber(NumberFormat.UInt16BE, 1)
+                y = available.getNumber(NumberFormat.UInt8LE, 3)
+                w = available.getNumber(NumberFormat.UInt16BE, 4)
+                h = available.getNumber(NumberFormat.UInt8LE, 6)
+                tag = ""
+                for (let m = 7; m < data_len + 1; m++) {
+                    tag += String.fromCharCode(available.getNumber(NumberFormat.UInt8LE, m))
+                }
+                return true
+            }
+        }
+        return false
     }
-        // Microbit controller  @end
+
+    //% blockId=Barcode_recognize block="Barcode recognize"
+    //% subcategory="Executive"
+    //% group="Microbit K210"
+    //% weight=60
+    export function barcode_recognize(): boolean {
+        if (set_mode != 3) {
+            let data_send = pins.createBuffer(3)
+            data_send.setNumber(NumberFormat.UInt8LE, 0, 3)
+            data_send.setNumber(NumberFormat.UInt8LE, 1, 13)
+            data_send.setNumber(NumberFormat.UInt8LE, 2, 10)
+            serial.writeBuffer(data_send)
+            basic.pause(100)
+            set_mode = 3
+        }
+
+        let available = serial.readBuffer(0)
+        if (available && available.length > 0) {
+            let data_len = available.getNumber(NumberFormat.UInt8LE, 0)
+            if (available.length >= data_len + 1) {
+                x = available.getNumber(NumberFormat.UInt16BE, 1)
+                y = available.getNumber(NumberFormat.UInt8LE, 3)
+                w = available.getNumber(NumberFormat.UInt16BE, 4)
+                h = available.getNumber(NumberFormat.UInt8LE, 6)
+                tag = ""
+                for (let m = 7; m < data_len + 1; m++) {
+                    tag += String.fromCharCode(available.getNumber(NumberFormat.UInt8LE, m))
+                }
+                return true
+            }
+        }
+        return false
+    }
+
+
+
+// Microbit K210  @end
 
 }
