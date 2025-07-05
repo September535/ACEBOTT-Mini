@@ -2448,42 +2448,60 @@ namespace Acebott{
 
     // 全局变量
     let set_mode = 0
-    let x = 0  // QR 的 X 坐标
-    let y = 0  // QR 的 Y 坐标
-    let w = 0  // QR 的宽度
-    let h = 0  // QR 的高度
-    let tag = ""  // QR 的内容
+    let x = 0      // X坐标
+    let y = 0      // Y坐标
+    let w = 0      // 宽度
+    let h = 0      // 高度
+    let cx = 0     // 中心点X坐标
+    let cy = 0     // 中心点Y坐标
+    let tag = ""   // 识别内容
 
-    //% block="QR Data"
-    export enum QRData {
-        //% block="x coordinate"
+    //% block="识别模式"
+    export enum RecognitionMode {
+        //% block="QR码"
+        QRCode,
+        //% block="条形码"
+        Barcode,
+        //% block="人脸"
+        Face,
+        //% block="图像"
+        Image,
+        //% block="数字"
+        Number
+    }
+
+    //% block="颜色选择"
+    export enum ColorSelection {
+
+        //% block="全部"
+        All = 0,
+        //% block="红色"
+        Red = 1,
+        //% block="绿色"
+        Green = 2,
+        //% block="蓝色"
+        Blue = 3
+    }
+
+    //% block="数据类型"
+    export enum CodeData {
+        //% block="X坐标"
         X,
-        //% block="y coordinate"
+        //% block="Y坐标"
         Y,
-        //% block="width"
+        //% block="宽度"
         W,
-        //% block="height"
+        //% block="高度"
         H,
-        //% block="text"
-        Tag
+        //% block="中心X"
+        CenterX,
+        //% block="中心Y"
+        CenterY,
+        //% block="内容"
+        Tag,
     }
 
-    //% blockId=Get_QR_Data block="Get QR |%data"
-    //% subcategory="Executive"
-    //% group="Microbit K210"
-    //% weight=50
-    export function getQRData(data: QRData): number | string {
-        switch (data) {
-            case QRData.X: return x;
-            case QRData.Y: return y;
-            case QRData.W: return w;
-            case QRData.H: return h;
-            case QRData.Tag: return tag;
-            default: return 0;
-        }
-    }
-
-    //% blockId=K210_Init block="K210_Init"
+    //% blockId=K210_Init block="K210初始化"
     //% subcategory="Executive"
     //% group="Microbit K210"
     //% weight=70
@@ -2495,32 +2513,35 @@ namespace Acebott{
         )
     }
 
-    //% blockId=QRCode_Recognize block="QRCode Recognize"
+    //% blockId=recognize_color block="识别颜色 %color"
     //% subcategory="Executive"
     //% group="Microbit K210"
-    //% weight=60
-    export function qrcode_recognize(): boolean {
-        if (set_mode != 2) {
-            let data_send = pins.createBuffer(3)
-            data_send.setNumber(NumberFormat.UInt8LE, 0, 2)
-            data_send.setNumber(NumberFormat.UInt8LE, 1, 13)
-            data_send.setNumber(NumberFormat.UInt8LE, 2, 10)
+    //% weight=65
+    export function recognizeColor(color: ColorSelection): boolean {
+        if (set_mode != 1) {
+            let data_send = pins.createBuffer(4)
+            data_send.setNumber(NumberFormat.UInt8LE, 0, 1) // 颜色识别模式
+            data_send.setNumber(NumberFormat.UInt8LE, 1, color) // 颜色索引
+            data_send.setNumber(NumberFormat.UInt8LE, 2, 13) // 指令结束符1
+            data_send.setNumber(NumberFormat.UInt8LE, 3, 10) // 指令结束符2
             serial.writeBuffer(data_send)
             basic.pause(100)
-            set_mode = 2
+            set_mode = 1
         }
 
         let available = serial.readBuffer(0)
         if (available && available.length > 0) {
             let data_len = available.getNumber(NumberFormat.UInt8LE, 0)
             if (available.length >= data_len + 1) {
-                x = available.getNumber(NumberFormat.UInt16BE, 1)
+                x = available.getNumber(NumberFormat.UInt16LE, 1)
                 y = available.getNumber(NumberFormat.UInt8LE, 3)
-                w = available.getNumber(NumberFormat.UInt16BE, 4)
+                w = available.getNumber(NumberFormat.UInt16LE, 4)
                 h = available.getNumber(NumberFormat.UInt8LE, 6)
+                cx = available.getNumber(NumberFormat.UInt16LE, 7)
+                cy = available.getNumber(NumberFormat.UInt8LE, 9)
                 tag = ""
-                for (let m = 7; m < data_len + 1; m++) {
-                    tag += String.fromCharCode(available.getNumber(NumberFormat.UInt8LE, m))
+                for (let i = 10; i < data_len + 1; i++) {
+                    tag += String.fromCharCode(available.getNumber(NumberFormat.UInt8LE, i))
                 }
                 return true
             }
@@ -2528,32 +2549,49 @@ namespace Acebott{
         return false
     }
 
-    //% blockId=Barcode_recognize block="Barcode recognize"
+    //% blockId=recognize_code block="识别 %mode"
     //% subcategory="Executive"
     //% group="Microbit K210"
     //% weight=60
-    export function barcode_recognize(): boolean {
-        if (set_mode != 3) {
+    export function recognizeCode(mode: RecognitionMode): boolean {
+        // 设置模式代码
+        let target_mode = 0
+        switch (mode) {
+            case RecognitionMode.QRCode: target_mode = 2; break
+            case RecognitionMode.Barcode: target_mode = 3; break
+            case RecognitionMode.Face: target_mode = 4; break
+            case RecognitionMode.Image: target_mode = 5; break
+            case RecognitionMode.Number: target_mode = 6; break
+        }
+
+        if (set_mode != target_mode) {
             let data_send = pins.createBuffer(3)
-            data_send.setNumber(NumberFormat.UInt8LE, 0, 3)
+            data_send.setNumber(NumberFormat.UInt8LE, 0, target_mode)
             data_send.setNumber(NumberFormat.UInt8LE, 1, 13)
             data_send.setNumber(NumberFormat.UInt8LE, 2, 10)
             serial.writeBuffer(data_send)
             basic.pause(100)
-            set_mode = 3
+            set_mode = target_mode
         }
 
         let available = serial.readBuffer(0)
         if (available && available.length > 0) {
             let data_len = available.getNumber(NumberFormat.UInt8LE, 0)
             if (available.length >= data_len + 1) {
-                x = available.getNumber(NumberFormat.UInt16BE, 1)
+                x = available.getNumber(NumberFormat.UInt16LE, 1)
                 y = available.getNumber(NumberFormat.UInt8LE, 3)
-                w = available.getNumber(NumberFormat.UInt16BE, 4)
+                w = available.getNumber(NumberFormat.UInt16LE, 4)
                 h = available.getNumber(NumberFormat.UInt8LE, 6)
+
+                if (mode == RecognitionMode.Face) {
+                    cx = available.getNumber(NumberFormat.UInt16LE, 7)
+                    cy = available.getNumber(NumberFormat.UInt8LE, 9)
+                }
+
                 tag = ""
-                for (let m = 7; m < data_len + 1; m++) {
-                    tag += String.fromCharCode(available.getNumber(NumberFormat.UInt8LE, m))
+                let startIdx = mode == RecognitionMode.Face ? 10 : 7
+                for (let i = startIdx; i < data_len + 1; i++) {
+                    tag += String.fromCharCode(available.getNumber(NumberFormat.UInt8LE, i))
                 }
                 return true
             }
@@ -2561,7 +2599,22 @@ namespace Acebott{
         return false
     }
 
-
+    //% blockId=get_code_data block="获取 %data"
+    //% subcategory="Executive"
+    //% group="Microbit K210"
+    //% weight=50
+    export function getCodeData(data: CodeData): string {
+        switch (data) {
+            case CodeData.X: return x.toString()
+            case CodeData.Y: return y.toString()
+            case CodeData.W: return w.toString()
+            case CodeData.H: return h.toString()
+            case CodeData.CenterX: return cx.toString()
+            case CodeData.CenterY: return cy.toString()
+            case CodeData.Tag: return tag
+            default: return "0"
+        }
+    }
 
 // Microbit K210  @end
 
