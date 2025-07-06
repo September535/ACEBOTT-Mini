@@ -2642,38 +2642,72 @@ namespace Acebott{
         if (available && available.length > 0) {
             let data_len = available.getNumber(NumberFormat.UInt8LE, 0)
             if (available.length >= data_len + 1) {
+                tag = ""
                 switch (mode) {
                     case RecognitionMode.VisualPatrol:
                         angle = available.getNumber(NumberFormat.UInt8LE, 1) - 60
                         return true
-
                     case RecognitionMode.MachineLearning:
+                    case RecognitionMode.Number:
                         tag = available.getNumber(NumberFormat.UInt8LE, 1).toString()
                         return true
 
-                    default:
-                        x = available.getNumber(NumberFormat.UInt16LE, 1)
-                        y = available.getNumber(NumberFormat.UInt8LE, 3)
-                        w = available.getNumber(NumberFormat.UInt16LE, 4)
-                        h = available.getNumber(NumberFormat.UInt8LE, 6)
-
-                        // 人脸和交通标志有中心点坐标
-                        if (mode == RecognitionMode.Face ||
-                            mode == RecognitionMode.TrafficCard ||
-                            mode == RecognitionMode.TrafficSign) {
-                            cx = available.getNumber(NumberFormat.UInt16LE, 7)
-                            cy = available.getNumber(NumberFormat.UInt8LE, 9)
+                    case RecognitionMode.Image:
+                        for (let n = 10; n < data_len + 1; n++) {
+                            tag += String.fromCharCode(available.getNumber(NumberFormat.UInt8LE, n))
                         }
+                        return true
+                    case RecognitionMode.Face:
+                        for (let n = 10; n < data_len + 1; n++) {
+                            tag += available.getNumber(NumberFormat.UInt8LE, 10)
+                        }
+                        return true
 
-                        // 读取标签内容
-                        tag = ""
-                        let startIdx = (mode == RecognitionMode.Face ||
-                            mode == RecognitionMode.TrafficCard ||
-                            mode == RecognitionMode.TrafficSign) ? 10 : 7
-                        for (let i = startIdx; i < data_len + 1; i++) {
+                    case RecognitionMode.Barcode:
+                    case RecognitionMode.QRCode:
+                        for (let m = 7; m < data_len + 1; m++) {
+                                tag += String.fromCharCode(available.getNumber(NumberFormat.UInt8LE, m))
+                            }
+                        return true
+
+                    case RecognitionMode.TrafficCard:
+                    case RecognitionMode.TrafficSign:
+                        for (let i = 10; i < data_len + 1; i++) {
                             tag += String.fromCharCode(available.getNumber(NumberFormat.UInt8LE, i))
                         }
                         return true
+
+                        
+                    // default:
+                    //     x = available.getNumber(NumberFormat.UInt16LE, 1)
+                    //     y = available.getNumber(NumberFormat.UInt8LE, 3)
+                    //     w = available.getNumber(NumberFormat.UInt16LE, 4)
+                    //     h = available.getNumber(NumberFormat.UInt8LE, 6)
+
+                        // 人脸和交通标志有中心点坐标
+                        // if (mode == RecognitionMode.Face ||
+                        //     mode == RecognitionMode.TrafficCard ||
+                        //     mode == RecognitionMode.TrafficSign) {
+                        //     cx = available.getNumber(NumberFormat.UInt16LE, 7)
+                        //     cy = available.getNumber(NumberFormat.UInt8LE, 9)
+                        // }
+
+                        // // 读取标签内容、
+                        // tag = ""
+                        // if (RecognitionMode.QRCode || RecognitionMode.Barcode){
+                        //     for (let m = 7; m < data_len + 1; m++) {
+                        //         tag += String.fromCharCode(available.getNumber(NumberFormat.UInt8LE, m))
+                        //     }
+                        // }
+
+                        // if (mode == RecognitionMode.Image || mode == RecognitionMode.TrafficCard || mode == RecognitionMode.TrafficSign) {
+                        //     for (let n = 10; n < data_len + 1; n++) {
+            
+                        //         tag += String.fromCharCode(available.getNumber(NumberFormat.UInt8LE, n))
+                        //     }
+                        // }
+
+
                 }
             }
         }
