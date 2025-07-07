@@ -2462,70 +2462,71 @@ namespace Acebott{
     let blue_value = 0
 
     export enum RecognitionMode {
-        //% block="QR码"
+        //% block="qr code recogniton"
         QRCode = 2,
-        //% block="条形码"
+        //% block="barcode recognition"
         Barcode = 3,
-        //% block="人脸"
+        //% block="face recognition"
         Face = 4,
-        //% block="图像"
+        //% block="image recognition"
         Image = 5,
-        //% block="数字"
+        //% block="number recognition"
         Number = 6,
-        //% block="交通标志-卡片"
+        //% block="traffic recognition: card"
         TrafficCard = 7,
-        //% block="交通标志-标识牌" 
+        //% block="traffic recoqnition: sin plate"
         TrafficSign = 10,
-        //% block="视觉巡线"
+        //% block="vision line followinga"
         VisualPatrol = 8,
-        //% block="机器学习"
+        //% block="machine leaming"
         MachineLearning = 9
     }
 
     export enum ColorSelection {
-        //% block="全部"
+        //% block="All"
         All = 0,
-        //% block="红色"
+        //% block="Red"
         Red = 1,
-        //% block="绿色"
+        //% block="Green"
         Green = 2,
-        //% block="蓝色"
+        //% block="Blue"
         Blue = 3
     }
 
     export enum CodeData {
-        //% block="X坐标"
+        //% block="X coordinate"
         X,
-        //% block="Y坐标"
+        //% block="Y coordinate"
         Y,
-        //% block="宽度"
+        //% block="width"
         W,
-        //% block="高度"
+        //% block="height"
         H,
-        //% block="中心X"
+        //% block="Center X"
         CenterX,
-        //% block="中心Y"
+        //% block="Center Y"
         CenterY,
-        //% block="角度"
-        Angle,
-        //% block="内容"
+        //% block="recognition resul"
         Tag,
+        //% block="tline following result"
+        Angle
     }
 
-    //% blockId=K210_Init block="K210初始化"
+    //% blockId=K210_Init block="Visual module initialize"
     //% subcategory="Executive"
     //% group="Microbit K210"
     //% weight=100
     export function K210_Init(): void {
+        serial.setRxBufferSize(64)
         serial.redirect(
             SerialPin.P14,
             SerialPin.P15,
             BaudRate.BaudRate115200
         )
-        set_mode = 0
+        set_mode = 0;
     }
 
-    //% blockId=K210_Menu block="K210主界面"
+    //% blockId=K210_Menu block="Visual module retum to main menu"
     //% subcategory="Executive"
     //% group="Microbit K210"
     //% weight=100
@@ -2540,8 +2541,7 @@ namespace Acebott{
             set_mode = 0
         }
     }
-
-    //% blockId=K210_RGB_lights block="Set RGB color R:%r G:%g B:%b"
+    //% blockId=K210_RGB_lights block="Set Visual aRGB color R:%r G:%g B:%b"
     //% r.min=0 r.max=255
     //% g.min=0 g.max=255
     //% b.min=0 b.max=255
@@ -2566,7 +2566,7 @@ namespace Acebott{
         blue_value = b
     }
 
-    //% blockId=recognize_color block="识别颜色 %color"
+    //% blockId=recognize_color block="color recognition %color"
     //% subcategory="Executive"
     //% group="Microbit K210" 
     //% weight=95
@@ -2607,7 +2607,7 @@ namespace Acebott{
         }
         return false
     }
-    //% blockId=recognize_code block="识别 %mode"
+    //% blockId=recognize_code block=" %mode"
     //% subcategory="Executive"
     //% group="Microbit K210"
     //% weight=90
@@ -2641,37 +2641,52 @@ namespace Acebott{
         let available = serial.readBuffer(0)
         if (available && available.length > 0) {
             let data_len = available.getNumber(NumberFormat.UInt8LE, 0)
+           
             if (available.length >= data_len + 1) {
+                let payload = available.slice(2, data_len);
+                x = available.getNumber(NumberFormat.UInt16LE, 1)
+                y = available.getNumber(NumberFormat.UInt8LE, 3)
+                w = available.getNumber(NumberFormat.UInt16LE, 4)
+                h = available.getNumber(NumberFormat.UInt8LE, 6)
+                if (mode == RecognitionMode.Face) {
+                    cx = available.getNumber(NumberFormat.UInt16LE, 7)
+                    cy = available.getNumber(NumberFormat.UInt8LE, 9)
+                }
+                tag = ""
                 switch (mode) {
                     case RecognitionMode.VisualPatrol:
                         angle = available.getNumber(NumberFormat.UInt8LE, 1) - 60
                         return true
-
                     case RecognitionMode.MachineLearning:
+                    case RecognitionMode.Number:
                         tag = available.getNumber(NumberFormat.UInt8LE, 1).toString()
                         return true
 
-                    default:
-                        x = available.getNumber(NumberFormat.UInt16LE, 1)
-                        y = available.getNumber(NumberFormat.UInt8LE, 3)
-                        w = available.getNumber(NumberFormat.UInt16LE, 4)
-                        h = available.getNumber(NumberFormat.UInt8LE, 6)
-
-                        // 人脸和交通标志有中心点坐标
-                        if (mode == RecognitionMode.Face ||
-                            mode == RecognitionMode.TrafficCard ||
-                            mode == RecognitionMode.TrafficSign) {
-                            cx = available.getNumber(NumberFormat.UInt16LE, 7)
-                            cy = available.getNumber(NumberFormat.UInt8LE, 9)
+                    case RecognitionMode.Image:
+                        for (let n = 10; n < data_len + 1; n++) {
+                            tag += String.fromCharCode(available.getNumber(NumberFormat.UInt8LE, n))
                         }
+                        return true
+                    case RecognitionMode.Face:
+                        for (let n = 10; n < data_len + 1; n++) {
+                            tag += available.getNumber(NumberFormat.UInt8LE, 10)
+                        }
+                        return true
 
-                        // 读取标签内容
-                        tag = ""
-                        let startIdx = (mode == RecognitionMode.Face ||
-                            mode == RecognitionMode.TrafficCard ||
-                            mode == RecognitionMode.TrafficSign) ? 10 : 7
-                        for (let i = startIdx; i < data_len + 1; i++) {
-                            tag += String.fromCharCode(available.getNumber(NumberFormat.UInt8LE, i))
+                    case RecognitionMode.Barcode:
+                    case RecognitionMode.QRCode:
+                        for (let m = 7; m < data_len + 1; m++) {
+                                tag += String.fromCharCode(available.getNumber(NumberFormat.UInt8LE, m))
+                            }
+                        return true
+
+                    case RecognitionMode.TrafficCard:
+                    case RecognitionMode.TrafficSign:
+
+                        // tag = String.fromCharCode(available.getNumber(NumberFormat.UInt8LE, 10))
+     
+                        for (let i = 10; i < data_len; i++) {
+                            tag += String.fromCharCode(available.getNumber(NumberFormat.UInt8LE, i));
                         }
                         return true
                 }
@@ -2679,7 +2694,7 @@ namespace Acebott{
         }
         return false
     }
-    //% blockId=get_code_data block="获取 %data"
+    //% blockId=get_code_data block="get %data"
     //% subcategory="Executive"
     //% group="Microbit K210"
     //% weight=85
@@ -2691,8 +2706,8 @@ namespace Acebott{
             case CodeData.H: return h.toString()
             case CodeData.CenterX: return cx.toString()
             case CodeData.CenterY: return cy.toString()
-            case CodeData.Angle: return angle.toString()
             case CodeData.Tag: return tag
+            case CodeData.Angle: return angle.toString()
             default: return "0"
         }
     }
