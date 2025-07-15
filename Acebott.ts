@@ -2308,51 +2308,61 @@ namespace Acebott{
     //% weight=100
     //% group="Microbit Car"
     //% subcategory="Executive"
-    export function motors(lspeed: number = 50, rspeed: number = 50): void {
+    export function motors(lspeed: number = 0, rspeed: number = 0): void {
         let buf = pins.createBuffer(4);
-        if (lspeed > 100) {
-            lspeed = 100;
-        } else if (lspeed < -100) {
-            lspeed = -100;
-        }
-        if (rspeed > 100) {
-            rspeed = 100;
-        } else if (rspeed < -100) {
-            rspeed = -100;
-        }
-        if (lspeed > 0) {
-            buf[0] = 0x00;                      
-            buf[1] = 0x01;   //左轮
-            buf[2] = 0x02;   //向前
-            buf[3] = lspeed;	  
-            pins.i2cWriteBuffer(0x18, buf);
-        }
-        else {
-            lspeed = ~lspeed;
-            buf[0] = 0x00;                     
-            buf[1] = 0x01;   //左轮
-            buf[2] = 0x01;   //向后
-            buf[3] = lspeed;	 
-            pins.i2cWriteBuffer(0x18, buf);
-        }
-        if (rspeed > 0) {
-            buf[0] = 0x00;                      
-            buf[1] = 0x02;   //右轮
-            buf[2] = 0x02;   //向前
-            buf[3] = rspeed;	 
-            pins.i2cWriteBuffer(0x18, buf);
-        }
-        else {
-            rspeed = ~rspeed;
-            buf[0] = 0x00;                      
-            buf[1] = 0x02;   //右轮
-            buf[2] = 0x01;   //向前
-            buf[3] = rspeed;	    
-            pins.i2cWriteBuffer(0x18, buf);
-        }
-          
-    }
 
+        // 限制速度范围
+        lspeed = Math.constrain(lspeed, -100, 100);
+        rspeed = Math.constrain(rspeed, -100, 100);
+
+        // 左轮控制
+        if (lspeed === 0) {
+            // 单独停止左轮
+            buf[0] = 0x00;
+            buf[1] = 0x01;  // 左轮
+            buf[2] = 0x00;  // 停止
+            buf[3] = 0;     // 速度为0
+            pins.i2cWriteBuffer(0x18, buf);
+        }
+        else if (lspeed > 0) {
+            buf[0] = 0x00;
+            buf[1] = 0x01;  // 左轮
+            buf[2] = 0x02;  // 向前
+            buf[3] = lspeed;
+            pins.i2cWriteBuffer(0x18, buf);
+        }
+        else { // lspeed < 0
+            buf[0] = 0x00;
+            buf[1] = 0x01;  // 左轮
+            buf[2] = 0x01;  // 向后
+            buf[3] = -lspeed; // 取绝对值（~lspeed + 1 也可以，但 -lspeed 更直观）
+            pins.i2cWriteBuffer(0x18, buf);
+        }
+
+        // 右轮控制
+        if (rspeed === 0) {
+            // 单独停止右轮
+            buf[0] = 0x00;
+            buf[1] = 0x02;  // 右轮
+            buf[2] = 0x00;  // 停止
+            buf[3] = 0;     // 速度为0
+            pins.i2cWriteBuffer(0x18, buf);
+        }
+        else if (rspeed > 0) {
+            buf[0] = 0x00;
+            buf[1] = 0x02;  // 右轮
+            buf[2] = 0x02;  // 向前
+            buf[3] = rspeed;
+            pins.i2cWriteBuffer(0x18, buf);
+        }
+        else { // rspeed < 0
+            buf[0] = 0x00;
+            buf[1] = 0x02;  // 右轮
+            buf[2] = 0x01;  // 向后
+            buf[3] = -rspeed; // 取绝对值
+            pins.i2cWriteBuffer(0x18, buf);
+        }
+    }
     
     //% blockId=c block="Set direction %dir | speed %speed"
     //% weight=100
