@@ -2581,41 +2581,49 @@ namespace Acebott{
     //% group="Microbit K210" 
     //% weight=95
     export function recognize_color(color: ColorSelection): boolean {
+        // 模式切换检查（与Arduino完全一致）
         if (set_mode != 1 || color_index != color) {
-
-            let data_send = pins.createBuffer(8)
-            data_send.setNumber(NumberFormat.UInt8LE, 0, 1)
-            data_send.setNumber(NumberFormat.UInt8LE, 1, color)
-            data_send.setNumber(NumberFormat.UInt8LE, 2, 600 >> 8)
-            data_send.setNumber(NumberFormat.UInt8LE, 3, 600 & 0xFF)
-            data_send.setNumber(NumberFormat.UInt8LE, 4, 100 >> 8)
-            data_send.setNumber(NumberFormat.UInt8LE, 5, 100 & 0xFF)
-            data_send.setNumber(NumberFormat.UInt8LE, 6, 13)
-            data_send.setNumber(NumberFormat.UInt8LE, 7, 10)
-            serial.writeBuffer(data_send)
-            basic.pause(100)
-            set_mode = 1
-            color_index = color
+            let data_send = pins.createBuffer(8);
+            data_send.setNumber(NumberFormat.UInt8LE, 0, 1);       // set_mode
+            data_send.setNumber(NumberFormat.UInt8LE, 1, color);   // color_index
+            data_send.setNumber(NumberFormat.UInt8LE, 2, 600 >> 8); // area_threshold高字节
+            data_send.setNumber(NumberFormat.UInt8LE, 3, 600 & 0xFF);// area_threshold低字节
+            data_send.setNumber(NumberFormat.UInt8LE, 4, 100 >> 8); // pixels_threshold高字节
+            data_send.setNumber(NumberFormat.UInt8LE, 5, 100 & 0xFF);// pixels_threshold低字节
+            data_send.setNumber(NumberFormat.UInt8LE, 6, 13);      // CR
+            data_send.setNumber(NumberFormat.UInt8LE, 7, 10);      // LF
+            serial.writeBuffer(data_send);
+            basic.pause(100);  // 与Arduino的delay(100)对应
+            set_mode = 1;
+            color_index = color;
         }
 
-        let available = serial.readBuffer(0)
-        if (available && available.length > 0) {
-            let data_len = available.getNumber(NumberFormat.UInt8LE, 0)
-            if (available.length >= data_len + 1) {
-                x = available.getNumber(NumberFormat.UInt16LE, 1)
-                y = available.getNumber(NumberFormat.UInt8LE, 3)
-                w = available.getNumber(NumberFormat.UInt16LE, 4)
-                h = available.getNumber(NumberFormat.UInt8LE, 6)
-                cx = available.getNumber(NumberFormat.UInt16LE, 7)
-                cy = available.getNumber(NumberFormat.UInt8LE, 9)
-                tag = ""
-                for (let i = 10; i < data_len + 1; i++) {
-                    tag += String.fromCharCode(available.getNumber(NumberFormat.UInt8LE, i))
-                }
-                return true
+        // 数据接收与解析（关键修改点）
+        let received = serial.readBuffer(0);
+        if (received && received.length >= 12) {  // 最小有效长度=1(长度字节)+9(cx字段)+2(标签)
+            let data_len = received.getNumber(NumberFormat.UInt8LE, 0);
+
+            // 严格长度校验（与Arduino的while(available<data_len)等效）
+            if (data_len < 9 || received.length < data_len + 1) {
+                return false;
             }
+
+            // 按Arduino协议手动解析（修复cx偏移量）
+            x = (received.getNumber(NumberFormat.UInt8LE, 1) << 8) | received.getNumber(NumberFormat.UInt8LE, 2);
+            y = received.getNumber(NumberFormat.UInt8LE, 3);
+            w = (received.getNumber(NumberFormat.UInt8LE, 4) << 8) | received.getNumber(NumberFormat.UInt8LE, 5);
+            h = received.getNumber(NumberFormat.UInt8LE, 6);
+            cx = (received.getNumber(NumberFormat.UInt8LE, 7) << 8) | received.getNumber(NumberFormat.UInt8LE, 8); // 修正为第7-8字节
+            cy = received.getNumber(NumberFormat.UInt8LE, 9);
+
+            // 标签提取（与Arduino的String((char*)(UartBuff+9))等效）
+            tag = "";
+            for (let i = 10; i < data_len + 1; i++) {
+                tag += String.fromCharCode(received.getNumber(NumberFormat.UInt8LE, i));
+            }
+            return true;
         }
-        return false
+        return false;
     }
     //% blockId=recognize_code block=" %mode"
     //% subcategory="Executive"
