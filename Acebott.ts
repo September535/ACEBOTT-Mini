@@ -2655,63 +2655,60 @@ namespace Acebott{
             basic.pause(100)
         }
 
-        // 数据处理
-        let available = serial.readBuffer(0)
+        // 数据接收与解析（关键修改）
+        let available = serial.readBuffer(0);
         if (available && available.length > 0) {
-            let data_len = available.getNumber(NumberFormat.UInt8LE, 0)
-           
-            if (available.length >= data_len + 1) {
-                let payload = available.slice(2, data_len);
-                x = available.getNumber(NumberFormat.UInt16LE, 1)
-                y = available.getNumber(NumberFormat.UInt8LE, 3)
-                w = available.getNumber(NumberFormat.UInt16LE, 4)
-                h = available.getNumber(NumberFormat.UInt8LE, 6)
-                if (mode == RecognitionMode.Face) {
-                    cx = available.getNumber(NumberFormat.UInt16LE, 7)
-                    cy = available.getNumber(NumberFormat.UInt8LE, 9)
-                }
-                tag = ""
-                switch (mode) {
-                    case RecognitionMode.VisualPatrol:
-                        angle = available.getNumber(NumberFormat.UInt8LE, 1) - 60
-                        return true
-                    case RecognitionMode.MachineLearning:
-                    case RecognitionMode.Number:
-                        tag = available.getNumber(NumberFormat.UInt8LE, 1).toString()
-                        return true
+            let data_len = available.getNumber(NumberFormat.UInt8LE, 0);
 
-                    case RecognitionMode.Image:
-                        for (let n = 10; n < data_len + 1; n++) {
-                            tag += String.fromCharCode(available.getNumber(NumberFormat.UInt8LE, n))
-                        }
-                        return true
-                    case RecognitionMode.Face:
-                        for (let n = 10; n < data_len + 1; n++) {
-                            tag += available.getNumber(NumberFormat.UInt8LE, 10)
-                        }
-                        return true
+            // 严格长度校验（新增）
+            if (data_len < 6 || available.length < data_len + 1) {
+                return false;
+            }
 
-                    case RecognitionMode.Barcode:
-                    case RecognitionMode.QRCode:
-                        for (let m = 7; m < data_len + 1; m++) {
-                                tag += String.fromCharCode(available.getNumber(NumberFormat.UInt8LE, m))
-                            }
-                        return true
+            // 统一解析基础字段（修正偏移量）
+            x = (available.getNumber(NumberFormat.UInt8LE, 1) << 8) | available.getNumber(NumberFormat.UInt8LE, 2);
+            y = available.getNumber(NumberFormat.UInt8LE, 3);
+            w = (available.getNumber(NumberFormat.UInt8LE, 4) << 8) | available.getNumber(NumberFormat.UInt8LE, 5);
+            h = available.getNumber(NumberFormat.UInt8LE, 6);
 
-                    case RecognitionMode.TrafficCard:
-                    case RecognitionMode.TrafficSign:
+            // 人脸模式专用字段（明确隔离）
+            if (mode == RecognitionMode.Face) {
+                if (data_len < 10) return false;  // 额外长度检查
+                cx = (available.getNumber(NumberFormat.UInt8LE, 7) << 8) | available.getNumber(NumberFormat.UInt8LE, 8);
+                cy = available.getNumber(NumberFormat.UInt8LE, 9);
+            }
 
-                        // tag = String.fromCharCode(available.getNumber(NumberFormat.UInt8LE, 10))
-     
-                        for (let i = 10; i < data_len; i++) {
-                            tag += String.fromCharCode(available.getNumber(NumberFormat.UInt8LE, i));
-                        }
-                        return true
-                }
+            // 标签提取逻辑标准化（关键修改）
+            tag = "";
+            switch (mode) {
+                case RecognitionMode.VisualPatrol:
+                    angle = available.getNumber(NumberFormat.UInt8LE, 1) - 60;
+                    return true;
+
+                case RecognitionMode.MachineLearning:
+                case RecognitionMode.Number:
+                    tag = available.getNumber(NumberFormat.UInt8LE, 1).toString();
+                    return true;
+
+                case RecognitionMode.Barcode:
+                case RecognitionMode.QRCode:
+                    // 统一从第7字节开始，长度=data_len-6
+                    for (let m = 7; m < Math.min(data_len + 1, available.length); m++) {
+                        tag += String.fromCharCode(available.getNumber(NumberFormat.UInt8LE, m));
+                    }
+                    return true;
+
+                default:  // Image/Face/TrafficCard/TrafficSign
+                    // 统一从第10字节开始，长度=data_len-9
+                    for (let i = 10; i < Math.min(data_len + 1, available.length); i++) {
+                        tag += String.fromCharCode(available.getNumber(NumberFormat.UInt8LE, i));
+                    }
+                    return true;
             }
         }
-        return false
+        return false;
     }
+
     //% blockId=get_code_data block="get %data"
     //% subcategory="Executive"
     //% group="Microbit K210"
