@@ -2333,9 +2333,9 @@ namespace Acebott{
         }
         else { // lspeed < 0
             buf[0] = 0x00;
-            buf[1] = 0x01;  // 左轮
-            buf[2] = 0x01;  // 向后
-            buf[3] = -lspeed; // 取绝对值（~lspeed + 1 也可以，但 -lspeed 更直观）
+            buf[1] = 0x01;  
+            buf[2] = 0x01;  
+            buf[3] = -lspeed;
             pins.i2cWriteBuffer(0x18, buf);
         }
 
@@ -2343,23 +2343,23 @@ namespace Acebott{
         if (rspeed === 0) {
             // 单独停止右轮
             buf[0] = 0x00;
-            buf[1] = 0x02;  // 右轮
-            buf[2] = 0x00;  // 停止
-            buf[3] = 0;     // 速度为0
+            buf[1] = 0x02;  
+            buf[2] = 0x00;  
+            buf[3] = 0;     
             pins.i2cWriteBuffer(0x18, buf);
         }
         else if (rspeed > 0) {
             buf[0] = 0x00;
-            buf[1] = 0x02;  // 右轮
-            buf[2] = 0x02;  // 向前
-            buf[3] = rspeed;
+            buf[1] = 0x02;  
+            buf[2] = 0x02;  
+            buf[3] = rspeed
             pins.i2cWriteBuffer(0x18, buf);
         }
         else { // rspeed < 0
             buf[0] = 0x00;
-            buf[1] = 0x02;  // 右轮
-            buf[2] = 0x01;  // 向后
-            buf[3] = -rspeed; // 取绝对值
+            buf[1] = 0x02;  
+            buf[2] = 0x01;  
+            buf[3] = -rspeed; 
             pins.i2cWriteBuffer(0x18, buf);
         }
     }
@@ -2668,7 +2668,6 @@ namespace Acebott{
 
             if (available.length >= data_len + 1) {
                 let payload = available.slice(2, data_len);
-                // 统一解析基础字段（修正偏移量）
                 x = (available.getNumber(NumberFormat.UInt8LE, 1) << 8) | available.getNumber(NumberFormat.UInt8LE, 2);
                 y = available.getNumber(NumberFormat.UInt8LE, 3);
                 w = (available.getNumber(NumberFormat.UInt8LE, 4) << 8) | available.getNumber(NumberFormat.UInt8LE, 5);
@@ -2708,8 +2707,6 @@ namespace Acebott{
                     case RecognitionMode.TrafficCard:
                     case RecognitionMode.TrafficSign:
 
-                        // tag = String.fromCharCode(available.getNumber(NumberFormat.UInt8LE, 10))
-
                         for (let i = 10; i < Math.min(data_len + 1, available.length); i++) {
                             tag += String.fromCharCode(available.getNumber(NumberFormat.UInt8LE, i));
                         }
@@ -2725,7 +2722,6 @@ namespace Acebott{
     //% group="Microbit K210"
     //% weight=85
     export function clearSerialBuffer(): void  {
-        // 读取并丢弃所有缓存数据
         while (serial.readBuffer(0) && serial.readBuffer(0).length > 0) {
             serial.readBuffer(0);
         }
