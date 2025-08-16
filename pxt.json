@@ -10,7 +10,7 @@
         "README.md",
         "Acebott.ts",
         "_locales/en/strings.json"
-        "_locales/zh/Acebott-strings.json",
+       # "_locales/zh/Acebott-strings.json",
     ],
     "testFiles": [
         "test.ts"
