@@ -66,7 +66,7 @@
   "Acebott.Four_bit_key|block": "Read the %dir keys",
   "Acebott.Vibrating_machine|block": "Vibrating machine %condition ", 
   
-  "Acebott|block": "Acebott",
+  "Acebott|block": "2WD-Robot",
   "AnalogReadPin.P0|block": "P0",
   "AnalogReadPin.P1|block": "P1",
   "AnalogReadPin.P2|block": "P2",
@@ -174,7 +174,7 @@
   "UARTPin.P1|block": "P1",
   "UARTPin.P2|block": "P2",
   "UARTPin.P8|block": "P8",
-  "{id:category}Acebott": "Acebott",
+  "{id:category}Acebott": "2WD-Robot",
   "{id:category}Background": "Background",
   "{id:group}130 DC Motor": "130 DC Motor",
   "{id:group}4-Digit Tube": "4-Digit Tube",
