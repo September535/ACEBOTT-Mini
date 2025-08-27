@@ -2429,8 +2429,8 @@ namespace Acebott{
     export function tracking(side: MbPins): number {
         pins.setPull(AnalogReadWritePin.P0, PinPullMode.PullUp); 
         pins.setPull(AnalogReadWritePin.P1, PinPullMode.PullUp);  
-        let left_tracking = pins.analogReadPin(AnalogReadWritePin.P0); 
-        let right_tracking = pins.analogReadPin(AnalogReadWritePin.P1); 
+        let left_tracking = pins.analogReadPin(AnalogReadWritePin.P1; 
+        let right_tracking = pins.analogReadPin(AnalogReadWritePin.P0); 
 
         if (side == MbPins.Left) {
             return left_tracking;
